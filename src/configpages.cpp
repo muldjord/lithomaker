@@ -37,23 +37,25 @@ MainPage::MainPage(QWidget *parent) : QWidget(parent)
 {
   QPushButton *resetButton = new QPushButton(tr("Reset all to defaults"));
 
+  /*
   CheckBox *alwaysMaximizeCheckBox = new CheckBox(tr("Always maximize window on startup"), "Main", "alwaysMaximize", true);
   connect(resetButton, &QPushButton::clicked, alwaysMaximizeCheckBox, &CheckBox::resetToDefault);
+  */
 
   QVBoxLayout *layout = new QVBoxLayout();
   layout->addWidget(resetButton);
-  layout->addWidget(alwaysMaximizeCheckBox);
+  //layout->addWidget(alwaysMaximizeCheckBox);
   layout->addStretch();
   setLayout(layout);
 }
 
-OutputPage::OutputPage(QWidget *parent) : QWidget(parent)
+ExportPage::ExportPage(QWidget *parent) : QWidget(parent)
 {
   QPushButton *resetButton = new QPushButton(tr("Reset all to defaults"));
 
   /*
   QLabel *delimiterLabel = new QLabel(tr("Delimiter:"));
-  ComboBox *delimiterComboBox = new ComboBox("Output", "delimiter", "tab");
+  ComboBox *delimiterComboBox = new ComboBox("Export", "delimiter", "tab");
   delimiterComboBox->addConfigItem("Tab", "tab");
   delimiterComboBox->addConfigItem("Semicolon", "semicolon");
   delimiterComboBox->addConfigItem("Comma", "comma");
@@ -61,11 +63,11 @@ OutputPage::OutputPage(QWidget *parent) : QWidget(parent)
   connect(resetButton, SIGNAL(clicked()), delimiterComboBox, SLOT(resetToDefault()));
 
   QLabel *distanceUnitLabel = new QLabel(tr("Distance unit:"));
-  LineEdit *distanceUnitLineEdit = new LineEdit("Output", "distanceUnit", "μm");
+  LineEdit *distanceUnitLineEdit = new LineEdit("Export", "distanceUnit", "μm");
   connect(resetButton, SIGNAL(clicked()), distanceUnitLineEdit, SLOT(resetToDefault()));
 
   QLabel *timeUnitLabel = new QLabel(tr("Time unit:"));
-  LineEdit *timeUnitLineEdit = new LineEdit("Output", "timeUnit", "s");
+  LineEdit *timeUnitLineEdit = new LineEdit("Export", "timeUnit", "s");
   connect(resetButton, SIGNAL(clicked()), timeUnitLineEdit, SLOT(resetToDefault()));
   */
   

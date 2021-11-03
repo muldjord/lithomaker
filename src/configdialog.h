@@ -49,7 +49,7 @@ private:
   QListWidget *contentsWidget;
   QStackedWidget *pagesWidget;
   MainPage *mainPage;
-  OutputPage *outputPage;
+  ExportPage *exportPage;
 };
 
 #endif // __CONFIGDIALOG_H__

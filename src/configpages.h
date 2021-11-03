@@ -37,12 +37,12 @@ public:
   MainPage(QWidget *parent = 0);
 };
 
-class OutputPage : public QWidget
+class ExportPage : public QWidget
 {
   Q_OBJECT
 
 public:
-  OutputPage(QWidget *parent = 0);
+  ExportPage(QWidget *parent = 0);
 };
 
 #endif // __CONFIGPAGES_H__

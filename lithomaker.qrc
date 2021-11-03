@@ -4,9 +4,11 @@
     <file alias="LICENSE">LICENSE</file>
     <file alias="AUTHORS">AUTHORS</file>
     <file alias="icon.png">icons/icon.png</file>
+    <file alias="quit.png">icons/quit.png</file>
     <file alias="about.png">icons/about.png</file>
     <file alias="preferences.png">icons/preferences.png</file>
     <file alias="render.png">icons/render.png</file>
-    <file alias="generalconfig.png">icons/generalconfig.png</file>
+    <file alias="mainconfig.png">icons/mainconfig.png</file>
+    <file alias="exportconfig.png">icons/exportconfig.png</file>
   </qresource>
 </RCC>

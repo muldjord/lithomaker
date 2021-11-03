@@ -51,15 +51,108 @@ MainWindow::MainWindow()
   createActions();
   createMenus();
 
+  QLabel *inputLabel = new QLabel(tr("Input image filename:"));
+  inputLineEdit = new QLineEdit(tr("example.png"));
+
+  QLabel *exportLabel = new QLabel(tr("Export STL filename:"));
+  exportLineEdit = new QLineEdit(tr("lithophane.stl"));
+
+  QPushButton *renderButton = new QPushButton(tr("Render"));
+  connect(renderButton, &QPushButton::clicked, this, &MainWindow::renderStl);
+
+  QPushButton *exportButton = new QPushButton(tr("Export"));
+  connect(exportButton, &QPushButton::clicked, this, &MainWindow::exportStl);
+
+  QVBoxLayout *layout = new QVBoxLayout();
+  layout->addWidget(inputLabel);
+  layout->addWidget(inputLineEdit);
+  layout->addWidget(exportLabel);
+  layout->addWidget(exportLineEdit);
+  layout->addWidget(renderButton);
+  layout->addWidget(exportButton);
+
   setCentralWidget(new QWidget());
-  //centralWidget()->setLayout(layout);
+  centralWidget()->setLayout(layout);
 
   show();
 
-  QImage image("example.png");
+}
+
+MainWindow::~MainWindow()
+{
+  settings->setValue("windowState", saveGeometry());
+}
+
+void MainWindow::createActions()
+{
+  quitAct = new QAction("&Quit", this);
+  quitAct->setIcon(QIcon(":quit.png"));
+  connect(quitAct, &QAction::triggered, qApp, &QApplication::quit);
+
+  preferencesAct = new QAction(tr("Edit &Preferences..."), this);
+  preferencesAct->setIcon(QIcon(":preferences.png"));
+  connect(preferencesAct, &QAction::triggered, this, &MainWindow::showPreferences);
+
+  aboutAct = new QAction(tr("&About..."), this);
+  aboutAct->setIcon(QIcon(":about.png"));
+  connect(aboutAct, &QAction::triggered, this, &MainWindow::showAbout);
+}
+
+void MainWindow::createMenus()
+{
+  fileMenu = new QMenu(tr("&File"), this);
+  fileMenu->addAction(quitAct);
+
+  optionsMenu = new QMenu(tr("&Options"), this);
+  optionsMenu->addAction(preferencesAct);
+
+  helpMenu = new QMenu(tr("&Help"), this);
+  helpMenu->addAction(aboutAct);
+
+  menuBar = new QMenuBar();
+  menuBar->addMenu(fileMenu);
+  menuBar->addMenu(optionsMenu);
+  menuBar->addMenu(helpMenu);
+  
+  setMenuBar(menuBar);
+}
+
+void MainWindow::showAbout()
+{
+  // Spawn about window
+  AboutBox aboutBox(this);
+  aboutBox.exec();
+}
+
+void MainWindow::showPreferences()
+{
+  // Spawn preferences dialog
+  ConfigDialog preferences(this);
+  preferences.exec();
+}
+
+QString MainWindow::getVertexString(const double &x, const double &y, const double &z)
+{
+  return QString("\t\t\tvertex " + QString::number((double)x, 'g') + " " + QString::number((double)y, 'g') + " " + QString::number((double)z, 'g') + "\n");
+}
+
+QString MainWindow::beginTriangle()
+{
+  return QString("\tfacet normal 0.0 0.0 0.0\n\t\touter loop\n");
+}
+
+QString MainWindow::endTriangle()
+{
+  return QString("\t\tendloop\n\tendfacet\n");
+}
+
+void MainWindow::renderStl()
+{
+  printf("Rendering STL...\n");
+  QImage image(inputLineEdit->text());
   image.invertPixels();
   image = image.mirrored(false, true);
-  QString stlString = "solid lithophane\n";
+  stlString = "solid lithophane\n";
   for(int y = 0; y < image.height() - 1; ++y) {
     // Close left side
     stlString.append(beginTriangle());
@@ -139,77 +232,21 @@ MainWindow::MainWindow()
   stlString.append(endTriangle());
 
   stlString.append("endsolid\n");
-  QFile stlFile("lithophane.stl");
+  printf("Rendering finished...\n");
+  QMessageBox::information(this, tr("Rendering completed"), tr("The 3D lithophane has been successfully rendered. You can now export it."));
+}
+
+void MainWindow::exportStl()
+{
+  printf("Exporting to file: '%s'... ", exportLineEdit->text().toStdString().c_str());
+  QFile stlFile(exportLineEdit->text());
   if(stlFile.open(QIODevice::WriteOnly)) {
     stlFile.write(stlString.toUtf8());
     stlFile.close();
+    printf("Success!\n");
+    QMessageBox::information(this, tr("Export succeeded"), tr("The STL was successfully exported! You can now import it in your preferred 3D printing slicer."));
+  } else {
+    QMessageBox::warning(this, tr("Export failed"), tr("File could not be opened for writing. Please check export filename location permissions and try again."));
+    printf("Failed!\n");
   }
-}
-
-MainWindow::~MainWindow()
-{
-  settings->setValue("windowState", saveGeometry());
-}
-
-void MainWindow::createActions()
-{
-  quitAct = new QAction("&Quit", this);
-  quitAct->setIcon(QIcon(":quit.png"));
-  connect(quitAct, SIGNAL(triggered()), qApp, SLOT(quit()));
-
-  preferencesAct = new QAction(tr("Edit &Preferences..."), this);
-  preferencesAct->setIcon(QIcon(":preferences.png"));
-  connect(preferencesAct, SIGNAL(triggered()), this, SLOT(showPreferences()));
-
-  aboutAct = new QAction(tr("&About..."), this);
-  aboutAct->setIcon(QIcon(":about.png"));
-  connect(aboutAct, SIGNAL(triggered()), this, SLOT(showAbout()));
-}
-
-void MainWindow::createMenus()
-{
-  fileMenu = new QMenu(tr("&File"), this);
-  fileMenu->addAction(quitAct);
-
-  optionsMenu = new QMenu(tr("&Options"), this);
-  optionsMenu->addAction(preferencesAct);
-
-  helpMenu = new QMenu(tr("&Help"), this);
-  helpMenu->addAction(aboutAct);
-
-  menuBar = new QMenuBar();
-  menuBar->addMenu(fileMenu);
-  menuBar->addMenu(optionsMenu);
-  menuBar->addMenu(helpMenu);
-  
-  setMenuBar(menuBar);
-}
-
-void MainWindow::showAbout()
-{
-  // Spawn about window
-  AboutBox aboutBox(this);
-  aboutBox.exec();
-}
-
-void MainWindow::showPreferences()
-{
-  // Spawn preferences dialog
-  ConfigDialog preferences(this);
-  preferences.exec();
-}
-
-QString MainWindow::getVertexString(const double &x, const double &y, const double &z)
-{
-  return QString("\t\t\tvertex " + QString::number((double)x, 'g') + " " + QString::number((double)y, 'g') + " " + QString::number((double)z, 'g') + "\n");
-}
-
-QString MainWindow::beginTriangle()
-{
-  return QString("\tfacet normal 0.0 0.0 0.0\n\t\touter loop\n");
-}
-
-QString MainWindow::endTriangle()
-{
-  return QString("\t\tendloop\n\tendfacet\n");
 }

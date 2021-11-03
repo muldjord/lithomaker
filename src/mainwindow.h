@@ -52,8 +52,13 @@ private slots:
   void showPreferences();
   
 private:
+  void renderStl();
+  void exportStl();
   void createActions();
   void createMenus();
+  QString stlString;
+  QLineEdit *inputLineEdit;
+  QLineEdit *exportLineEdit;
   QAction *quitAct;
   QAction *preferencesAct;
   QAction *aboutAct;

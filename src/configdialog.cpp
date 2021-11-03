@@ -40,11 +40,11 @@ ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
   contentsWidget->setSpacing(12);
 
   mainPage = new MainPage();
-  outputPage = new OutputPage();
+  exportPage = new ExportPage();
   
   pagesWidget = new QStackedWidget;
   pagesWidget->addWidget(mainPage);
-  pagesWidget->addWidget(outputPage);
+  pagesWidget->addWidget(exportPage);
 
   QPushButton *okButton = new QPushButton(tr("Save"));
 
@@ -77,11 +77,11 @@ void ConfigDialog::createIcons()
   mainButton->setTextAlignment(Qt::AlignHCenter);
   mainButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-  QListWidgetItem *outputButton = new QListWidgetItem(contentsWidget);
-  outputButton->setIcon(QIcon(":outputconfig.png"));
-  outputButton->setText(tr("Output"));
-  outputButton->setTextAlignment(Qt::AlignHCenter);
-  outputButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+  QListWidgetItem *exportButton = new QListWidgetItem(contentsWidget);
+  exportButton->setIcon(QIcon(":exportconfig.png"));
+  exportButton->setText(tr("Export"));
+  exportButton->setTextAlignment(Qt::AlignHCenter);
+  exportButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
   connect(contentsWidget, &QListWidget::currentItemChanged, this, &ConfigDialog::changePage);
 }
