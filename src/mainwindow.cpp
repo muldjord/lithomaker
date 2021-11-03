@@ -24,8 +24,6 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
  */
 
-#define DEBUG
-
 #include <stdio.h>
 #include <QtWidgets>
 #include <QSettings>
@@ -188,10 +186,6 @@ void MainWindow::createMenus()
   menuBar->addMenu(helpMenu);
   
   setMenuBar(menuBar);
-  
-#ifdef DEBUG  
-  qDebug("Created menu...\n");
-#endif
 }
 
 void MainWindow::showAbout()
