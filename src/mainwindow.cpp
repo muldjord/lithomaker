@@ -36,10 +36,9 @@ extern QSettings *settings;
 
 MainWindow::MainWindow()
 {
-  restoreGeometry(settings->value("main/windowState", "").toByteArray());
 
-  if(!settings->contains("main/windowState")) {
-    showPreferences();
+  if(settings->contains("main/windowState")) {
+    restoreGeometry(settings->value("main/windowState", "").toByteArray());
   }
 
   setWindowTitle("LithoMaker v" VERSION);
