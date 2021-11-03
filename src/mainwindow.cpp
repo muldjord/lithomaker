@@ -36,6 +36,8 @@ extern QSettings *settings;
 
 MainWindow::MainWindow()
 {
+  restoreGeometry(settings->value("windowState", "").toByteArray());
+
   if(!settings->contains("alwaysOnTop")) {
     showPreferences();
   }
@@ -46,8 +48,6 @@ MainWindow::MainWindow()
     setWindowFlags(Qt::WindowStaysOnTopHint);
   }
 
-  resize(settings->value("width", "800").toInt(), settings->value("height", "600").toInt());
-
   createActions();
   createMenus();
 
@@ -55,10 +55,6 @@ MainWindow::MainWindow()
   //centralWidget()->setLayout(layout);
 
   show();
-
-  if(settings->value("alwaysMaximize").toBool()) {
-    showMaximized();
-  }
 
   QImage image("example.png");
   image.invertPixels();
@@ -152,6 +148,7 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
+  settings->setValue("windowState", saveGeometry());
 }
 
 void MainWindow::createActions()
