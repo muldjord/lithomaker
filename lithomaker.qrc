@@ -7,12 +7,6 @@
     <file alias="about.png">icons/about.png</file>
     <file alias="preferences.png">icons/preferences.png</file>
     <file alias="processall.png">icons/processall.png</file>
-    <file alias="delete.png">icons/delete.png</file>
-    <file alias="addfolder.png">icons/addfolder.png</file>
-    <file alias="addfile.png">icons/addfile.png</file>
     <file alias="generalconfig.png">icons/generalconfig.png</file>
-    <file alias="algorithmconfig.png">icons/algorithmconfig.png</file>
-    <file alias="outputconfig.png">icons/outputconfig.png</file>
-    <file alias="diagramconfig.png">icons/diagramconfig.png</file>
   </qresource>
 </RCC>
