@@ -48,7 +48,13 @@ MainWindow::MainWindow()
   createMenus();
 
   QLabel *minThicknessLabel = new QLabel(tr("Minimum thickness (mm):"));
-  minThicknessLineEdit = new QLineEdit(settings->value("main/minThickness", "4.0").toString());
+  minThicknessLineEdit = new QLineEdit(settings->value("main/minThickness", "0.8").toString());
+
+  QLabel *totalThicknessLabel = new QLabel(tr("Total thickness (mm):"));
+  totalThicknessLineEdit = new QLineEdit(settings->value("main/totalThickness", "4.0").toString());
+
+  QLabel *widthLabel = new QLabel(tr("Width (mm):"));
+  widthLineEdit = new QLineEdit(settings->value("main/width", "150.0").toString());
 
   QLabel *inputLabel = new QLabel(tr("Input image filename:"));
   inputLineEdit = new QLineEdit(settings->value("main/inputFilePath", "example.png").toString());
@@ -65,6 +71,10 @@ MainWindow::MainWindow()
   QVBoxLayout *layout = new QVBoxLayout();
   layout->addWidget(minThicknessLabel);
   layout->addWidget(minThicknessLineEdit);
+  layout->addWidget(totalThicknessLabel);
+  layout->addWidget(totalThicknessLineEdit);
+  layout->addWidget(widthLabel);
+  layout->addWidget(widthLineEdit);
   layout->addWidget(inputLabel);
   layout->addWidget(inputLineEdit);
   layout->addWidget(exportLabel);
@@ -83,6 +93,8 @@ MainWindow::~MainWindow()
 {
   settings->setValue("main/windowState", saveGeometry());
   settings->setValue("main/minThickness", minThicknessLineEdit->text());
+  settings->setValue("main/totalThickness", totalThicknessLineEdit->text());
+  settings->setValue("main/width", widthLineEdit->text());
   settings->setValue("main/inputFilePath", inputLineEdit->text());
   settings->setValue("main/exportFilePath", exportLineEdit->text());
 }
@@ -135,8 +147,11 @@ void MainWindow::showPreferences()
   preferences.exec();
 }
 
-QString MainWindow::getVertexString(const double &x, const double &y, const double &z)
+QString MainWindow::getVertexString(double x, double y, double z)
 {
+  x = x * widthFactor;
+  y = y * widthFactor;
+  //z = z * depthFactor;
   return QString("\t\t\tvertex " + QString::number((double)x, 'g') + " " + QString::number((double)y, 'g') + " " + QString::number((double)z, 'g') + "\n");
 }
 
@@ -157,17 +172,19 @@ void MainWindow::renderStl()
   image.invertPixels();
   image = image.mirrored(false, true);
   stlString = "solid lithophane\n";
+  depthFactor = (totalThicknessLineEdit->text().toDouble() - minThicknessLineEdit->text().toDouble()) / 255.0;
+  widthFactor = widthLineEdit->text().toDouble() / image.width();
   double minThickness = minThicknessLineEdit->text().toDouble() * -1;
   for(int y = 0; y < image.height() - 1; ++y) {
     // Close left side
     stlString.append(beginTriangle());
     stlString.append(getVertexString(0, y, minThickness));
-    stlString.append(getVertexString(0, y, image.pixelColor(0 , y).red() / factor));
-    stlString.append(getVertexString(0, y + 1, image.pixelColor(0 , y + 1).red() / factor));
+    stlString.append(getVertexString(0, y, image.pixelColor(0 , y).red() * depthFactor));
+    stlString.append(getVertexString(0, y + 1, image.pixelColor(0 , y + 1).red() * depthFactor));
     stlString.append(endTriangle());
     
     stlString.append(beginTriangle());
-    stlString.append(getVertexString(0, y + 1, image.pixelColor(0 , y + 1).red() / factor));
+    stlString.append(getVertexString(0, y + 1, image.pixelColor(0 , y + 1).red() * depthFactor));
     stlString.append(getVertexString(0, y + 1, minThickness));
     stlString.append(getVertexString(0, y, minThickness));
     stlString.append(endTriangle());
@@ -175,53 +192,53 @@ void MainWindow::renderStl()
       if(y == 0) {
 	// Close top
 	stlString.append(beginTriangle());
-	stlString.append(getVertexString(x + 1, 0, image.pixelColor(x + 1, 0).red() / factor));
-	stlString.append(getVertexString(x, 0, image.pixelColor(x , 0).red() / factor));
+	stlString.append(getVertexString(x + 1, 0, image.pixelColor(x + 1, 0).red() * depthFactor));
+	stlString.append(getVertexString(x, 0, image.pixelColor(x , 0).red() * depthFactor));
 	stlString.append(getVertexString(x, 0, minThickness));
 	stlString.append(endTriangle());
 	
 	stlString.append(beginTriangle());
 	stlString.append(getVertexString(x, 0, minThickness));
 	stlString.append(getVertexString(x + 1, 0, minThickness));
-	stlString.append(getVertexString(x + 1, 0, image.pixelColor(x + 1, 0).red() / factor));
+	stlString.append(getVertexString(x + 1, 0, image.pixelColor(x + 1, 0).red() * depthFactor));
 	stlString.append(endTriangle());
 
 	// Close bottom
 	stlString.append(beginTriangle());
 	stlString.append(getVertexString(x, image.height() - 1, minThickness));
-	stlString.append(getVertexString(x, image.height() - 1, image.pixelColor(x , image.height() - 1).red() / factor));
-	stlString.append(getVertexString(x + 1, image.height() - 1, image.pixelColor(x + 1, image.height() - 1).red() / factor));
+	stlString.append(getVertexString(x, image.height() - 1, image.pixelColor(x , image.height() - 1).red() * depthFactor));
+	stlString.append(getVertexString(x + 1, image.height() - 1, image.pixelColor(x + 1, image.height() - 1).red() * depthFactor));
 	stlString.append(endTriangle());
 	
 	stlString.append(beginTriangle());
-	stlString.append(getVertexString(x + 1, image.height() - 1, image.pixelColor(x + 1, image.height() - 1).red() / factor));
+	stlString.append(getVertexString(x + 1, image.height() - 1, image.pixelColor(x + 1, image.height() - 1).red() * depthFactor));
 	stlString.append(getVertexString(x + 1, image.height() - 1, minThickness));
 	stlString.append(getVertexString(x, image.height() - 1, minThickness));
 	stlString.append(endTriangle());
       }
       stlString.append(beginTriangle());
-      stlString.append(getVertexString(x, y, image.pixelColor(x, y).red() / factor));
-      stlString.append(getVertexString(x + 1, y + 1, image.pixelColor(x + 1, y + 1).red() / factor));
-      stlString.append(getVertexString(x, y + 1, image.pixelColor(x, y + 1).red() / factor));
+      stlString.append(getVertexString(x, y, image.pixelColor(x, y).red() * depthFactor));
+      stlString.append(getVertexString(x + 1, y + 1, image.pixelColor(x + 1, y + 1).red() * depthFactor));
+      stlString.append(getVertexString(x, y + 1, image.pixelColor(x, y + 1).red() * depthFactor));
       stlString.append(endTriangle());
 
       stlString.append(beginTriangle());
-      stlString.append(getVertexString(x, y, image.pixelColor(x, y).red() / factor));
-      stlString.append(getVertexString(x + 1, y, image.pixelColor(x + 1, y).red() / factor));
-      stlString.append(getVertexString(x + 1, y + 1, image.pixelColor(x + 1, y + 1).red() / factor));
+      stlString.append(getVertexString(x, y, image.pixelColor(x, y).red() * depthFactor));
+      stlString.append(getVertexString(x + 1, y, image.pixelColor(x + 1, y).red() * depthFactor));
+      stlString.append(getVertexString(x + 1, y + 1, image.pixelColor(x + 1, y + 1).red() * depthFactor));
       stlString.append(endTriangle());
     }
     // Close right side
     stlString.append(beginTriangle());
-    stlString.append(getVertexString(image.width() - 1, y + 1, image.pixelColor(image.width() - 1 , y + 1).red() / factor));
-    stlString.append(getVertexString(image.width() - 1, y, image.pixelColor(image.width() - 1 , y).red() / factor));
+    stlString.append(getVertexString(image.width() - 1, y + 1, image.pixelColor(image.width() - 1 , y + 1).red() * depthFactor));
+    stlString.append(getVertexString(image.width() - 1, y, image.pixelColor(image.width() - 1 , y).red() * depthFactor));
     stlString.append(getVertexString(image.width() - 1, y, minThickness));
     stlString.append(endTriangle());
     
     stlString.append(beginTriangle());
     stlString.append(getVertexString(image.width() - 1, y, minThickness));
     stlString.append(getVertexString(image.width() - 1, y + 1, minThickness));
-    stlString.append(getVertexString(image.width() - 1, y + 1, image.pixelColor(image.width() - 1 , y + 1).red() / factor));
+    stlString.append(getVertexString(image.width() - 1, y + 1, image.pixelColor(image.width() - 1 , y + 1).red() * depthFactor));
     stlString.append(endTriangle());
   }
   // Create flat backside
