@@ -37,19 +37,11 @@ MainPage::MainPage(QWidget *parent) : QWidget(parent)
 {
   QPushButton *resetButton = new QPushButton(tr("Reset all to defaults"));
 
-  CheckBox *alwaysOnTopCheckBox = new CheckBox(tr("Always keep window on top"), "Main", "alwaysOnTop", false);
-  connect(resetButton, &QPushButton::clicked, alwaysOnTopCheckBox, &CheckBox::resetToDefault);
-
-  CheckBox *alwaysCenterCheckBox = new CheckBox(tr("Always center window on startup"), "Main", "alwaysCenter", false);
-  connect(resetButton, &QPushButton::clicked, alwaysCenterCheckBox, &CheckBox::resetToDefault);
-
   CheckBox *alwaysMaximizeCheckBox = new CheckBox(tr("Always maximize window on startup"), "Main", "alwaysMaximize", true);
   connect(resetButton, &QPushButton::clicked, alwaysMaximizeCheckBox, &CheckBox::resetToDefault);
 
   QVBoxLayout *layout = new QVBoxLayout();
   layout->addWidget(resetButton);
-  layout->addWidget(alwaysOnTopCheckBox);
-  layout->addWidget(alwaysCenterCheckBox);
   layout->addWidget(alwaysMaximizeCheckBox);
   layout->addStretch();
   setLayout(layout);
