@@ -36,26 +36,25 @@ extern QSettings *settings;
 
 MainWindow::MainWindow()
 {
-  restoreGeometry(settings->value("windowState", "").toByteArray());
+  restoreGeometry(settings->value("main/windowState", "").toByteArray());
 
-  if(!settings->contains("alwaysOnTop")) {
+  if(!settings->contains("main/windowState")) {
     showPreferences();
   }
 
   setWindowTitle("LithoMaker v" VERSION);
 
-  if(settings->value("alwaysOnTop").toBool()) {
-    setWindowFlags(Qt::WindowStaysOnTopHint);
-  }
-
   createActions();
   createMenus();
 
+  QLabel *minThicknessLabel = new QLabel(tr("Minimum thickness (mm):"));
+  minThicknessLineEdit = new QLineEdit(settings->value("main/minThickness", "4.0").toString());
+
   QLabel *inputLabel = new QLabel(tr("Input image filename:"));
-  inputLineEdit = new QLineEdit(tr("example.png"));
+  inputLineEdit = new QLineEdit(settings->value("main/inputFilePath", "example.png").toString());
 
   QLabel *exportLabel = new QLabel(tr("Export STL filename:"));
-  exportLineEdit = new QLineEdit(tr("lithophane.stl"));
+  exportLineEdit = new QLineEdit(settings->value("main/exportFilePath", "lithophane.stl").toString());
 
   QPushButton *renderButton = new QPushButton(tr("Render"));
   connect(renderButton, &QPushButton::clicked, this, &MainWindow::renderStl);
@@ -64,6 +63,8 @@ MainWindow::MainWindow()
   connect(exportButton, &QPushButton::clicked, this, &MainWindow::exportStl);
 
   QVBoxLayout *layout = new QVBoxLayout();
+  layout->addWidget(minThicknessLabel);
+  layout->addWidget(minThicknessLineEdit);
   layout->addWidget(inputLabel);
   layout->addWidget(inputLineEdit);
   layout->addWidget(exportLabel);
@@ -80,7 +81,10 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
-  settings->setValue("windowState", saveGeometry());
+  settings->setValue("main/windowState", saveGeometry());
+  settings->setValue("main/minThickness", minThicknessLineEdit->text());
+  settings->setValue("main/inputFilePath", inputLineEdit->text());
+  settings->setValue("main/exportFilePath", exportLineEdit->text());
 }
 
 void MainWindow::createActions()
@@ -153,6 +157,7 @@ void MainWindow::renderStl()
   image.invertPixels();
   image = image.mirrored(false, true);
   stlString = "solid lithophane\n";
+  double minThickness = minThicknessLineEdit->text().toDouble() * -1;
   for(int y = 0; y < image.height() - 1; ++y) {
     // Close left side
     stlString.append(beginTriangle());

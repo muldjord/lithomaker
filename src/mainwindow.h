@@ -57,6 +57,7 @@ private:
   void createActions();
   void createMenus();
   QString stlString;
+  QLineEdit *minThicknessLineEdit;
   QLineEdit *inputLineEdit;
   QLineEdit *exportLineEdit;
   QAction *quitAct;
@@ -68,7 +69,6 @@ private:
   QMenuBar *menuBar;
 
   double factor = 15.0;
-  double minThickness = -3.0;
   
   QString beginTriangle();
   QString getVertexString(const double &x, const double &y, const double &z);
