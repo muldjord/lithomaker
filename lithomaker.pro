@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = Lithomaker
+TARGET = LithoMaker
 DEPENDPATH += .
 INCLUDEPATH += .
 CONFIG +=

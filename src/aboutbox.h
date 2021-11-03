@@ -1,6 +1,6 @@
 /* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /***************************************************************************
- *            aboutbox.h
+ *            aboutbox.cpp
  *
  *  Wed Nov 3 09:03:00 CEST 2021
  *  Copyright 2021 Lars Muldjord

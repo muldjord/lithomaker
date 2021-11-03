@@ -39,23 +39,19 @@ ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
   contentsWidget->setMinimumWidth(128);
   contentsWidget->setSpacing(12);
 
-  generalPage = new GeneralPage();
-  algorithmPage = new AlgorithmPage();
+  mainPage = new MainPage();
   outputPage = new OutputPage();
-  diagramPage = new DiagramPage();
   
   pagesWidget = new QStackedWidget;
-  pagesWidget->addWidget(generalPage);
-  pagesWidget->addWidget(algorithmPage);
+  pagesWidget->addWidget(mainPage);
   pagesWidget->addWidget(outputPage);
-  pagesWidget->addWidget(diagramPage);
 
   QPushButton *okButton = new QPushButton(tr("Save"));
 
   createIcons();
   contentsWidget->setCurrentRow(0);
 
-  connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(okButton, &QPushButton::clicked, this, &ConfigDialog::accept);
 
   QHBoxLayout *horizontalLayout = new QHBoxLayout;
   horizontalLayout->addWidget(contentsWidget);
@@ -65,27 +61,21 @@ ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
   buttonsLayout->addStretch(1);
   buttonsLayout->addWidget(okButton);
 
-  QVBoxLayout *generalLayout = new QVBoxLayout;
-  generalLayout->addLayout(horizontalLayout);
-  generalLayout->addLayout(buttonsLayout);
-  setLayout(generalLayout);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  mainLayout->addLayout(horizontalLayout);
+  mainLayout->addLayout(buttonsLayout);
+  setLayout(mainLayout);
 
   setWindowTitle(tr("Preferences"));
 }
 
 void ConfigDialog::createIcons()
 {
-  QListWidgetItem *generalButton = new QListWidgetItem(contentsWidget);
-  generalButton->setIcon(QIcon(":generalconfig.png"));
-  generalButton->setText(tr("General"));
-  generalButton->setTextAlignment(Qt::AlignHCenter);
-  generalButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-
-  QListWidgetItem *algorithmButton = new QListWidgetItem(contentsWidget);
-  algorithmButton->setIcon(QIcon(":algorithmconfig.png"));
-  algorithmButton->setText(tr("Algorithm"));
-  algorithmButton->setTextAlignment(Qt::AlignHCenter);
-  algorithmButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+  QListWidgetItem *mainButton = new QListWidgetItem(contentsWidget);
+  mainButton->setIcon(QIcon(":mainconfig.png"));
+  mainButton->setText(tr("Main"));
+  mainButton->setTextAlignment(Qt::AlignHCenter);
+  mainButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
   QListWidgetItem *outputButton = new QListWidgetItem(contentsWidget);
   outputButton->setIcon(QIcon(":outputconfig.png"));
@@ -93,14 +83,7 @@ void ConfigDialog::createIcons()
   outputButton->setTextAlignment(Qt::AlignHCenter);
   outputButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-  QListWidgetItem *diagramButton = new QListWidgetItem(contentsWidget);
-  diagramButton->setIcon(QIcon(":diagramconfig.png"));
-  diagramButton->setText(tr("Diagram"));
-  diagramButton->setTextAlignment(Qt::AlignHCenter);
-  diagramButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-  
-  connect(contentsWidget, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
-          this, SLOT(changePage(QListWidgetItem*,QListWidgetItem*)));
+  connect(contentsWidget, &QListWidget::currentItemChanged, this, &ConfigDialog::changePage);
 }
 
 void ConfigDialog::changePage(QListWidgetItem *current, QListWidgetItem *previous)

@@ -29,20 +29,12 @@
 
 #include <QWidget>
 
-class GeneralPage : public QWidget
+class MainPage : public QWidget
 {
   Q_OBJECT
 
 public:
-  GeneralPage(QWidget *parent = 0);
-};
-
-class AlgorithmPage : public QWidget
-{
-  Q_OBJECT
-
-public:
-  AlgorithmPage(QWidget *parent = 0);
+  MainPage(QWidget *parent = 0);
 };
 
 class OutputPage : public QWidget
@@ -51,14 +43,6 @@ class OutputPage : public QWidget
 
 public:
   OutputPage(QWidget *parent = 0);
-};
-
-class DiagramPage : public QWidget
-{
-  Q_OBJECT
-
-public:
-  DiagramPage(QWidget *parent = 0);
 };
 
 #endif // __CONFIGPAGES_H__

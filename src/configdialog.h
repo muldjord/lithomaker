@@ -48,10 +48,8 @@ private:
   void createIcons();
   QListWidget *contentsWidget;
   QStackedWidget *pagesWidget;
-  GeneralPage *generalPage;
-  AlgorithmPage *algorithmPage;
+  MainPage *mainPage;
   OutputPage *outputPage;
-  DiagramPage *diagramPage;
 };
 
 #endif // __CONFIGDIALOG_H__
