@@ -54,11 +54,13 @@ private slots:
 private:
   void renderStl();
   void exportStl();
+  int getPixel(const QImage &image, const int &x, const int &y);
   void createActions();
   void createMenus();
   QString stlString;
   QLineEdit *minThicknessLineEdit;
   QLineEdit *totalThicknessLineEdit;
+  QLineEdit *borderLineEdit;
   QLineEdit *widthLineEdit;
   QLineEdit *inputLineEdit;
   QLineEdit *exportLineEdit;
@@ -74,9 +76,11 @@ private:
   double widthFactor = 1.0;
   
   QString beginTriangle();
-  QString getVertexString(double x, double y, double z);
+  QString getVertexString(double x, double y, double z, const bool &scale = false);
   QString endTriangle();
   
+  QString addStabilizer(const double &x, const double &height);
+  QString addCube(const double &x, const double &y, const double &z, const double &size);
 };
 
 #endif // __MAINWINDOW_H__
