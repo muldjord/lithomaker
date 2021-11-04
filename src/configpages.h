@@ -37,6 +37,14 @@ public:
   MainPage(QWidget *parent = 0);
 };
 
+class RenderPage : public QWidget
+{
+  Q_OBJECT
+
+public:
+  RenderPage(QWidget *parent = 0);
+};
+
 class ExportPage : public QWidget
 {
   Q_OBJECT

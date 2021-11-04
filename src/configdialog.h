@@ -49,6 +49,7 @@ private:
   QListWidget *contentsWidget;
   QStackedWidget *pagesWidget;
   MainPage *mainPage;
+  RenderPage *renderPage;
   ExportPage *exportPage;
 };
 

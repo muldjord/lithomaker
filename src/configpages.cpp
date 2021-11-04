@@ -49,6 +49,42 @@ MainPage::MainPage(QWidget *parent) : QWidget(parent)
   setLayout(layout);
 }
 
+RenderPage::RenderPage(QWidget *parent) : QWidget(parent)
+{
+  QPushButton *resetButton = new QPushButton(tr("Reset all to defaults"));
+
+  /*
+  QLabel *delimiterLabel = new QLabel(tr("Delimiter:"));
+  ComboBox *delimiterComboBox = new ComboBox("Render", "delimiter", "tab");
+  delimiterComboBox->addConfigItem("Tab", "tab");
+  delimiterComboBox->addConfigItem("Semicolon", "semicolon");
+  delimiterComboBox->addConfigItem("Comma", "comma");
+  delimiterComboBox->setFromConfig();
+  connect(resetButton, SIGNAL(clicked()), delimiterComboBox, SLOT(resetToDefault()));
+
+  QLabel *distanceUnitLabel = new QLabel(tr("Distance unit:"));
+  LineEdit *distanceUnitLineEdit = new LineEdit("Render", "distanceUnit", "μm");
+  connect(resetButton, SIGNAL(clicked()), distanceUnitLineEdit, SLOT(resetToDefault()));
+
+  QLabel *timeUnitLabel = new QLabel(tr("Time unit:"));
+  LineEdit *timeUnitLineEdit = new LineEdit("Render", "timeUnit", "s");
+  connect(resetButton, SIGNAL(clicked()), timeUnitLineEdit, SLOT(resetToDefault()));
+  */
+  
+  QVBoxLayout *layout = new QVBoxLayout();
+  layout->addWidget(resetButton);
+  /*
+  layout->addWidget(delimiterLabel);
+  layout->addWidget(delimiterComboBox);
+  layout->addWidget(distanceUnitLabel);
+  layout->addWidget(distanceUnitLineEdit);
+  layout->addWidget(timeUnitLabel);
+  layout->addWidget(timeUnitLineEdit);
+  */
+  layout->addStretch();
+  setLayout(layout);
+}
+
 ExportPage::ExportPage(QWidget *parent) : QWidget(parent)
 {
   QPushButton *resetButton = new QPushButton(tr("Reset all to defaults"));

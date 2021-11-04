@@ -28,10 +28,11 @@
 #define __MAINWINDOW_H__
 
 #include <QMainWindow>
-#include <QListWidget>
-#include <QCheckBox>
-#include <QPushButton>
-
+#include <QLineEdit>
+#include <QAction>
+#include <QMenu>
+#include <QMenuBar>
+#include <QProgressBar>
 
 class MainWindow : public QMainWindow
 {
@@ -50,6 +51,8 @@ signals:
 private slots:
   void showAbout();
   void showPreferences();
+  void inputSelect();
+  void exportSelect();
   
 private:
   void renderStl();
@@ -63,6 +66,7 @@ private:
   QLineEdit *borderLineEdit;
   QLineEdit *widthLineEdit;
   QLineEdit *inputLineEdit;
+  QProgressBar *renderProgress;
   QLineEdit *exportLineEdit;
   QAction *quitAct;
   QAction *preferencesAct;

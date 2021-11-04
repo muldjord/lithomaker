@@ -36,9 +36,10 @@ extern QSettings *settings;
 
 MainWindow::MainWindow()
 {
-
   if(settings->contains("main/windowState")) {
     restoreGeometry(settings->value("main/windowState", "").toByteArray());
+  } else {
+    setMinimumWidth(640);
   }
 
   setWindowTitle("LithoMaker v" VERSION);
@@ -60,15 +61,27 @@ MainWindow::MainWindow()
 
   QLabel *inputLabel = new QLabel(tr("Input image filename:"));
   inputLineEdit = new QLineEdit(settings->value("main/inputFilePath", "example.png").toString());
-
-  QLabel *exportLabel = new QLabel(tr("Export STL filename:"));
-  exportLineEdit = new QLineEdit(settings->value("main/exportFilePath", "lithophane.stl").toString());
+  QPushButton *inputButton = new QPushButton(tr("..."));
+  connect(inputButton, &QPushButton::clicked, this, &MainWindow::inputSelect);
+  QHBoxLayout *inputLayout = new QHBoxLayout();
+  inputLayout->addWidget(inputLineEdit);
+  inputLayout->addWidget(inputButton);
 
   QPushButton *renderButton = new QPushButton(tr("Render"));
   connect(renderButton, &QPushButton::clicked, this, &MainWindow::renderStl);
+  renderProgress = new QProgressBar(this);
+  renderProgress->setMinimum(0);
+  
+  QLabel *exportLabel = new QLabel(tr("Export STL filename:"));
+  exportLineEdit = new QLineEdit(settings->value("main/exportFilePath", "lithophane.stl").toString());
+  QPushButton *exportButton = new QPushButton(tr("..."));
+  connect(exportButton, &QPushButton::clicked, this, &MainWindow::exportSelect);
+  QHBoxLayout *exportLayout = new QHBoxLayout();
+  exportLayout->addWidget(exportLineEdit);
+  exportLayout->addWidget(exportButton);
 
-  QPushButton *exportButton = new QPushButton(tr("Export"));
-  connect(exportButton, &QPushButton::clicked, this, &MainWindow::exportStl);
+  QPushButton *exportNowButton = new QPushButton(tr("Export"));
+  connect(exportNowButton, &QPushButton::clicked, this, &MainWindow::exportStl);
 
   QVBoxLayout *layout = new QVBoxLayout();
   layout->addWidget(minThicknessLabel);
@@ -80,11 +93,12 @@ MainWindow::MainWindow()
   layout->addWidget(widthLabel);
   layout->addWidget(widthLineEdit);
   layout->addWidget(inputLabel);
-  layout->addWidget(inputLineEdit);
-  layout->addWidget(exportLabel);
-  layout->addWidget(exportLineEdit);
+  layout->addLayout(inputLayout);
+  layout->addWidget(renderProgress);
   layout->addWidget(renderButton);
-  layout->addWidget(exportButton);
+  layout->addWidget(exportLabel);
+  layout->addLayout(exportLayout);
+  layout->addWidget(exportNowButton);
 
   setCentralWidget(new QWidget());
   centralWidget()->setLayout(layout);
@@ -154,6 +168,10 @@ void MainWindow::showPreferences()
 
 void MainWindow::renderStl()
 {
+  if(!QFileInfo::exists(inputLineEdit->text())) {
+    QMessageBox::warning(this, tr("File not found"), tr("Input file doesn't exist. Please check filename and permissions."));
+    return;
+  }
   printf("Rendering STL...\n");
   QImage image(inputLineEdit->text());
   image.invertPixels();
@@ -162,6 +180,9 @@ void MainWindow::renderStl()
   depthFactor = (totalThicknessLineEdit->text().toDouble() - minThicknessLineEdit->text().toDouble()) / 255.0;
   widthFactor = (widthLineEdit->text().toDouble() - (border * 2)) / image.width();
   double minThickness = minThicknessLineEdit->text().toDouble() * -1;
+  renderProgress->setMaximum(image.height() - 1);
+  renderProgress->setValue(0);
+  renderProgress->setFormat(tr("Rendering %p%"));
   for(int y = 0; y < image.height() - 1; ++y) {
     // Close left side
     stlString.append(beginTriangle());
@@ -228,7 +249,10 @@ void MainWindow::renderStl()
     stlString.append(getVertexString(image.width() - 1, y + 1, minThickness, true));
     stlString.append(getVertexString(image.width() - 1, y + 1, getPixel(image, image.width() - 1, y + 1) * depthFactor, true));
     stlString.append(endTriangle());
+    renderProgress->setValue(renderProgress->value() + 1);
   }
+  renderProgress->setValue(renderProgress->maximum());
+  renderProgress->setFormat("Ready!");
 
   // Backside
   stlString.append(beginTriangle());
@@ -251,20 +275,23 @@ void MainWindow::renderStl()
   
   stlString.append("endsolid\n");
   printf("Rendering finished...\n");
-  QMessageBox::information(this, tr("Rendering completed"), tr("The 3D lithophane has been successfully rendered. You can now export it."));
 }
 
 void MainWindow::exportStl()
 {
+  if(stlString.isEmpty()) {
+    QMessageBox::warning(this, tr("Empty STL buffer"), tr("There is currently no rendered lithophane in the STL buffer. You need to render one before you can export it."));
+    return;
+  }
   printf("Exporting to file: '%s'... ", exportLineEdit->text().toStdString().c_str());
   QFile stlFile(exportLineEdit->text());
   if(stlFile.open(QIODevice::WriteOnly)) {
     stlFile.write(stlString.toUtf8());
     stlFile.close();
     printf("Success!\n");
-    QMessageBox::information(this, tr("Export succeeded"), tr("The STL was successfully exported! You can now import it in your preferred 3D printing slicer."));
+    QMessageBox::information(this, tr("Export succeeded"), tr("The STL was successfully exported. You can now import it in your preferred 3D printing slicer."));
   } else {
-    QMessageBox::warning(this, tr("Export failed"), tr("File could not be opened for writing. Please check export filename location permissions and try again."));
+    QMessageBox::warning(this, tr("Export failed"), tr("File could not be opened for writing. Please check export filename and try again."));
     printf("Failed!\n");
   }
 }
@@ -610,4 +637,23 @@ QString MainWindow::getVertexString(double x, double y, double z, const bool &sc
 QString MainWindow::endTriangle()
 {
   return QString("\t\tendloop\n\tendfacet\n");
+}
+
+void MainWindow::inputSelect()
+{
+  QString selectedFile = QFileDialog::getOpenFileName(this, tr("Select input file"), QFileInfo(inputLineEdit->text()).absolutePath(), "*.png");
+  if(selectedFile != QString()) {
+    inputLineEdit->setText(selectedFile);
+  }
+}
+
+void MainWindow::exportSelect()
+{
+  QString selectedFile = QFileDialog::getSaveFileName(this, tr("Enter export file"), QFileInfo(exportLineEdit->text()).absolutePath(), "*.stl");
+  if(selectedFile != QString()) {
+    if(selectedFile.right(4).toLower() != ".stl") {
+      selectedFile.append(".stl");
+    }
+    exportLineEdit->setText(selectedFile);
+  }
 }

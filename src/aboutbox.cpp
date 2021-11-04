@@ -38,7 +38,7 @@
 AboutBox::AboutBox(QWidget *parent): QDialog(parent)
 {
   setWindowTitle(tr("About Lithomaker"));
-  setFixedSize(590,500);
+  setFixedSize(750,500);
 
   // Read AUTHORS data from file
   QFile file(":AUTHORS");
@@ -94,10 +94,9 @@ AboutBox::AboutBox(QWidget *parent): QDialog(parent)
   licenseScroll->setStyleSheet("QScrollArea { background-color : white; }");
   licenseScroll->setWidget(license);
 
-  connect(licenseScroll->verticalScrollBar(), SIGNAL(sliderPressed()),
-          this, SLOT(noMoreScroll()));
+  connect(licenseScroll->verticalScrollBar(), &QScrollBar::sliderPressed, this, &AboutBox::noMoreScroll);
   tabs = new QTabWidget();
-  connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(checkTab(int)));
+  connect(tabs, &QTabWidget::currentChanged, this, &AboutBox::checkTab);
   tabs->addTab(releaseInfoScroll, "Release Info");
   tabs->addTab(licenseScroll, "License");
 
@@ -112,7 +111,7 @@ AboutBox::AboutBox(QWidget *parent): QDialog(parent)
 
   scrollTimer = new QTimer();
   scrollTimer->setSingleShot(true);
-  connect(scrollTimer, SIGNAL(timeout()), this, SLOT(scroll()));
+  connect(scrollTimer, &QTimer::timeout, this, &AboutBox::scroll);
 }
 
 void AboutBox::mousePressEvent(QMouseEvent * event)

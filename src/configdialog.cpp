@@ -30,23 +30,25 @@
 
 ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
 {
-  setFixedSize(800, 750);
+  setFixedSize(600, 400);
   contentsWidget = new QListWidget;
   contentsWidget->setViewMode(QListView::IconMode);
   contentsWidget->setIconSize(QSize(64, 64));
   contentsWidget->setMovement(QListView::Static);
-  contentsWidget->setMaximumWidth(128);
-  contentsWidget->setMinimumWidth(128);
+  contentsWidget->setMaximumWidth(100);
+  contentsWidget->setMinimumWidth(100);
   contentsWidget->setSpacing(12);
 
   mainPage = new MainPage();
+  renderPage = new RenderPage();
   exportPage = new ExportPage();
   
   pagesWidget = new QStackedWidget;
   pagesWidget->addWidget(mainPage);
+  pagesWidget->addWidget(renderPage);
   pagesWidget->addWidget(exportPage);
 
-  QPushButton *okButton = new QPushButton(tr("Save"));
+  QPushButton *okButton = new QPushButton(tr("Ok"));
 
   createIcons();
   contentsWidget->setCurrentRow(0);
@@ -77,6 +79,12 @@ void ConfigDialog::createIcons()
   mainButton->setTextAlignment(Qt::AlignHCenter);
   mainButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
+  QListWidgetItem *renderButton = new QListWidgetItem(contentsWidget);
+  renderButton->setIcon(QIcon(":renderconfig.png"));
+  renderButton->setText(tr("Render"));
+  renderButton->setTextAlignment(Qt::AlignHCenter);
+  renderButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
   QListWidgetItem *exportButton = new QListWidgetItem(contentsWidget);
   exportButton->setIcon(QIcon(":exportconfig.png"));
   exportButton->setText(tr("Export"));
@@ -88,8 +96,9 @@ void ConfigDialog::createIcons()
 
 void ConfigDialog::changePage(QListWidgetItem *current, QListWidgetItem *previous)
 {
-  if (!current)
+  if(!current) {
     current = previous;
+  }
 
   pagesWidget->setCurrentIndex(contentsWidget->row(current));
 }
