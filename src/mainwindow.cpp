@@ -172,6 +172,11 @@ void MainWindow::renderStl()
     QMessageBox::warning(this, tr("File not found"), tr("Input file doesn't exist. Please check filename and permissions."));
     return;
   }
+  if(borderLineEdit->text().toDouble() * 2 > widthLineEdit->text().toDouble()) {
+    QMessageBox::warning(this, tr("Border too thick"), tr("The chosen frame border size exceeds the size of the total lithophane width. Please correct this."));
+    return;
+  }
+  
   printf("Rendering STL...\n");
   QImage image(inputLineEdit->text());
   image.invertPixels();
@@ -267,8 +272,8 @@ void MainWindow::renderStl()
   stlString.append(endTriangle());
 
   // Stabilizers
-  stlString.append(addStabilizer(0, (image.height() * widthFactor) * 0.15));
-  stlString.append(addStabilizer(widthLineEdit->text().toDouble() - border, (image.height() * widthFactor) * 0.15));
+  stlString.append(addStabilizer(0, ((border * 2) + (image.height() * widthFactor)) * 0.15));
+  stlString.append(addStabilizer(widthLineEdit->text().toDouble() - (border < 4?border:4), ((border * 2) + (image.height() * widthFactor)) * 0.15));
 
   // Frame
   stlString.append(addFrame(widthLineEdit->text().toDouble(), (border * 2) + (image.height() * widthFactor)));
@@ -304,24 +309,24 @@ QString MainWindow::addStabilizer(const double &x, const double &height)
   QString stabilizer = "";
   // Front
   stabilizer.append(beginTriangle());
-  stabilizer.append(getVertexString(x + border, 0, z));
-  stabilizer.append(getVertexString(x + border, height, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), height, z));
   stabilizer.append(getVertexString(x, height, z));
   stabilizer.append(endTriangle());
   stabilizer.append(beginTriangle());
   stabilizer.append(getVertexString(x, height, z));
   stabilizer.append(getVertexString(x, 0, z));
-  stabilizer.append(getVertexString(x + border, 0, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z));
   stabilizer.append(endTriangle());
   stabilizer.append(beginTriangle());
   stabilizer.append(getVertexString(x, 0, z));
   stabilizer.append(getVertexString(x, 0, z + depth));
-  stabilizer.append(getVertexString(x + border, 0, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z));
   stabilizer.append(endTriangle());
   stabilizer.append(beginTriangle());
-  stabilizer.append(getVertexString(x + border, 0, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z));
   stabilizer.append(getVertexString(x, 0, z + depth));
-  stabilizer.append(getVertexString(x + border, 0, z + depth));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z + depth));
   stabilizer.append(endTriangle());
   stabilizer.append(beginTriangle());
   stabilizer.append(getVertexString(x, 0, z));
@@ -329,46 +334,46 @@ QString MainWindow::addStabilizer(const double &x, const double &height)
   stabilizer.append(getVertexString(x, 0, z + depth));
   stabilizer.append(endTriangle());
   stabilizer.append(beginTriangle());
-  stabilizer.append(getVertexString(x + border, 0, z + depth));
-  stabilizer.append(getVertexString(x + border, height, z));
-  stabilizer.append(getVertexString(x + border, 0, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z + depth));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), height, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z));
   stabilizer.append(endTriangle());
   stabilizer.append(beginTriangle());
   stabilizer.append(getVertexString(x, 0, z + depth));
   stabilizer.append(getVertexString(x, height, z));
-  stabilizer.append(getVertexString(x + border, height, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), height, z));
   stabilizer.append(endTriangle());
   stabilizer.append(beginTriangle());
-  stabilizer.append(getVertexString(x + border, height, z));
-  stabilizer.append(getVertexString(x + border, 0, z + depth));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), height, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z + depth));
   stabilizer.append(getVertexString(x, 0, z + depth));
   stabilizer.append(endTriangle());
 
   // Front cubes
   stabilizer.append(addCube(x, height - 4, z - 1, 1));
-  stabilizer.append(addCube(x + border - 1, height - 4, z - 1, 1));
+  stabilizer.append(addCube(x + (border < 4?border:4) - 1, height - 4, z - 1, 1));
 
   z = (minThicknessLineEdit->text().toDouble() * -1) - 1;
   // Back
   stabilizer.append(beginTriangle());
   stabilizer.append(getVertexString(x, height, z));
-  stabilizer.append(getVertexString(x + border, height, z));
-  stabilizer.append(getVertexString(x + border, 0, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), height, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z));
   stabilizer.append(endTriangle());
   stabilizer.append(beginTriangle());
-  stabilizer.append(getVertexString(x + border, 0, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z));
   stabilizer.append(getVertexString(x, 0, z));
   stabilizer.append(getVertexString(x, height, z));
   stabilizer.append(endTriangle());
   stabilizer.append(beginTriangle());
-  stabilizer.append(getVertexString(x + border, 0, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z));
   stabilizer.append(getVertexString(x, 0, z - depth));
   stabilizer.append(getVertexString(x, 0, z));
   stabilizer.append(endTriangle());
   stabilizer.append(beginTriangle());
-  stabilizer.append(getVertexString(x + border, 0, z - depth));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z - depth));
   stabilizer.append(getVertexString(x, 0, z - depth));
-  stabilizer.append(getVertexString(x + border, 0, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z));
   stabilizer.append(endTriangle());
   stabilizer.append(beginTriangle());
   stabilizer.append(getVertexString(x, 0, z - depth));
@@ -376,24 +381,24 @@ QString MainWindow::addStabilizer(const double &x, const double &height)
   stabilizer.append(getVertexString(x, 0, z));
   stabilizer.append(endTriangle());
   stabilizer.append(beginTriangle());
-  stabilizer.append(getVertexString(x + border, 0, z));
-  stabilizer.append(getVertexString(x + border, height, z));
-  stabilizer.append(getVertexString(x + border, 0, z - depth));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), height, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z - depth));
   stabilizer.append(endTriangle());
   stabilizer.append(beginTriangle());
-  stabilizer.append(getVertexString(x + border, height, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), height, z));
   stabilizer.append(getVertexString(x, height, z));
   stabilizer.append(getVertexString(x, 0, z - depth));
   stabilizer.append(endTriangle());
   stabilizer.append(beginTriangle());
   stabilizer.append(getVertexString(x, 0, z - depth));
-  stabilizer.append(getVertexString(x + border, 0, z - depth));
-  stabilizer.append(getVertexString(x + border, height, z));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z - depth));
+  stabilizer.append(getVertexString(x + (border < 4?border:4), height, z));
   stabilizer.append(endTriangle());
 
   // Back cubes
   stabilizer.append(addCube(x, height - 4, z, 1));
-  stabilizer.append(addCube(x + border - 1, height - 4, z, 1));
+  stabilizer.append(addCube(x + (border < 4?border:4) - 1, height - 4, z, 1));
 
   return stabilizer;
 }
