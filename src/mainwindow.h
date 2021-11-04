@@ -72,8 +72,9 @@ private:
   QMenu *helpMenu;
   QMenuBar *menuBar;
 
-  double depthFactor = 15.0;
-  double widthFactor = 1.0;
+  double depthFactor = -1.0;
+  double widthFactor = -1.0;
+  double border = -1.0;
   
   QString beginTriangle();
   QString getVertexString(double x, double y, double z, const bool &scale = false);
@@ -81,6 +82,7 @@ private:
   
   QString addStabilizer(const double &x, const double &height);
   QString addCube(const double &x, const double &y, const double &z, const double &size);
+  QString addFrame(const double &width, const double &height);
 };
 
 #endif // __MAINWINDOW_H__

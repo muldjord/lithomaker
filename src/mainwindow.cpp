@@ -158,8 +158,9 @@ void MainWindow::renderStl()
   QImage image(inputLineEdit->text());
   image.invertPixels();
   stlString = "solid lithophane\n";
+  border = borderLineEdit->text().toDouble();
   depthFactor = (totalThicknessLineEdit->text().toDouble() - minThicknessLineEdit->text().toDouble()) / 255.0;
-  widthFactor = (widthLineEdit->text().toDouble() - (borderLineEdit->text().toDouble() * 2)) / image.width();
+  widthFactor = (widthLineEdit->text().toDouble() - (border * 2)) / image.width();
   double minThickness = minThicknessLineEdit->text().toDouble() * -1;
   for(int y = 0; y < image.height() - 1; ++y) {
     // Close left side
@@ -241,8 +242,12 @@ void MainWindow::renderStl()
   stlString.append(getVertexString(image.width() - 1, image.height() - 1, minThickness, true));
   stlString.append(endTriangle());
 
+  // Stabilizers
   stlString.append(addStabilizer(0, (image.height() * widthFactor) * 0.15));
-  stlString.append(addStabilizer(widthLineEdit->text().toDouble() - borderLineEdit->text().toDouble(), (image.height() * widthFactor) * 0.15));
+  stlString.append(addStabilizer(widthLineEdit->text().toDouble() - border, (image.height() * widthFactor) * 0.15));
+
+  // Frame
+  stlString.append(addFrame(widthLineEdit->text().toDouble(), (border * 2) + (image.height() * widthFactor)));
   
   stlString.append("endsolid\n");
   printf("Rendering finished...\n");
@@ -267,7 +272,6 @@ void MainWindow::exportStl()
 QString MainWindow::addStabilizer(const double &x, const double &height)
 {
   double z = totalThicknessLineEdit->text().toDouble() - minThicknessLineEdit->text().toDouble() + 1;
-  double border = borderLineEdit->text().toDouble();
   double depth = height * 0.5;
 
   QString stabilizer = "";
@@ -433,6 +437,154 @@ QString MainWindow::addCube(const double &x, const double &y, const double &z, c
   return cube;
 }
 
+QString MainWindow::addFrame(const double &width, const double &height)
+{
+  double minThickness = minThicknessLineEdit->text().toDouble();
+  double depth = totalThicknessLineEdit->text().toDouble() - minThickness;
+  QString frame = "";
+  frame.append(beginTriangle());
+  frame.append(getVertexString(width, height, - minThickness));
+  frame.append(getVertexString(0.000000, height, - minThickness));
+  frame.append(getVertexString(0.000000, height, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(width, height, - minThickness));
+  frame.append(getVertexString(0.000000, height, depth));
+  frame.append(getVertexString(width, height, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(width - border - (border / 2.0), border + (border / 2.0), 0.100000));
+  frame.append(getVertexString(width - border - (border / 2.0), height - border - (border / 2.0), 0.100000));
+  frame.append(getVertexString(border + (border / 2.0), height - border - (border / 2.0), 0.100000));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(width - border - (border / 2.0), border + (border / 2.0), 0.100000));
+  frame.append(getVertexString(border + (border / 2.0), height - border - (border / 2.0), 0.100000));
+  frame.append(getVertexString(border + (border / 2.0), border + (border / 2.0), 0.100000));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(0.000000, 0.000000, depth));
+  frame.append(getVertexString(0.000000, height, depth));
+  frame.append(getVertexString(0.000000, height, - minThickness));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(0.000000, 0.000000, depth));
+  frame.append(getVertexString(0.000000, height, - minThickness));
+  frame.append(getVertexString(0.000000, 0.000000, - minThickness));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(0.000000, 0.000000, - minThickness));
+  frame.append(getVertexString(width, 0.000000, - minThickness));
+  frame.append(getVertexString(width, 0.000000, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(0.000000, 0.000000, - minThickness));
+  frame.append(getVertexString(width, 0.000000, depth));
+  frame.append(getVertexString(0.000000, 0.000000, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(width, 0.000000, - minThickness));
+  frame.append(getVertexString(width, height, - minThickness));
+  frame.append(getVertexString(width, height, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(width, 0.000000, - minThickness));
+  frame.append(getVertexString(width, height, depth));
+  frame.append(getVertexString(width, 0.000000, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(0.000000, 0.000000, - minThickness));
+  frame.append(getVertexString(0.000000, height, - minThickness));
+  frame.append(getVertexString(width, height, - minThickness));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(0.000000, 0.000000, - minThickness));
+  frame.append(getVertexString(width, height, - minThickness));
+  frame.append(getVertexString(width, 0.000000, - minThickness));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(border, border, depth));
+  frame.append(getVertexString(border, height - border, depth));
+  frame.append(getVertexString(0.000000, height, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(border, border, depth));
+  frame.append(getVertexString(0.000000, height, depth));
+  frame.append(getVertexString(0.000000, 0.000000, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(width - border, height - border, depth));
+  frame.append(getVertexString(width - border, border, depth));
+  frame.append(getVertexString(width, 0.000000, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(width - border, height - border, depth));
+  frame.append(getVertexString(width, 0.000000, depth));
+  frame.append(getVertexString(width, height, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(border, height - border, depth));
+  frame.append(getVertexString(width - border, height - border, depth));
+  frame.append(getVertexString(width, height, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(border, height - border, depth));
+  frame.append(getVertexString(width, height, depth));
+  frame.append(getVertexString(0.000000, height, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(width - border, border, depth));
+  frame.append(getVertexString(border, border, depth));
+  frame.append(getVertexString(0.000000, 0.000000, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(width - border, border, depth));
+  frame.append(getVertexString(0.000000, 0.000000, depth));
+  frame.append(getVertexString(width, 0.000000, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(border + (border / 2.0), border + (border / 2.0), 0.100000));
+  frame.append(getVertexString(border + (border / 2.0), height - border - (border / 2.0), 0.100000));
+  frame.append(getVertexString(border, height - border, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(border + (border / 2.0), border + (border / 2.0), 0.100000));
+  frame.append(getVertexString(border, height - border, depth));
+  frame.append(getVertexString(border, border, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(width - border - (border / 2.0), height - border - (border / 2.0), 0.100000));
+  frame.append(getVertexString(width - border - (border / 2.0), border + (border / 2.0), 0.100000));
+  frame.append(getVertexString(width - border, border, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(width - border - (border / 2.0), height - border - (border / 2.0), 0.100000));
+  frame.append(getVertexString(width - border, border, depth));
+  frame.append(getVertexString(width - border, height - border, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(border + (border / 2.0), height - border - (border / 2.0), 0.100000));
+  frame.append(getVertexString(width - border - (border / 2.0), height - border - (border / 2.0), 0.100000));
+  frame.append(getVertexString(width - border, height - border, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(border + (border / 2.0), height - border - (border / 2.0), 0.100000));
+  frame.append(getVertexString(width - border, height - border, depth));
+  frame.append(getVertexString(border, height - border, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(width - border - (border / 2.0), border + (border / 2.0), 0.100000));
+  frame.append(getVertexString(border + (border / 2.0), border + (border / 2.0), 0.100000));
+  frame.append(getVertexString(border, border, depth));
+  frame.append(endTriangle());
+  frame.append(beginTriangle());
+  frame.append(getVertexString(width - border - (border / 2.0), border + (border / 2.0), 0.100000));
+  frame.append(getVertexString(border, border, depth));
+  frame.append(getVertexString(width - border, border, depth));
+  frame.append(endTriangle());
+  return frame;
+}
+
 int MainWindow::getPixel(const QImage &image, const int &x, const int &y)
 {
   return image.pixelColor(x, image.height() - 1 - y).red();
@@ -445,12 +597,14 @@ QString MainWindow::beginTriangle()
 
 QString MainWindow::getVertexString(double x, double y, double z, const bool &scale)
 {
+  double add = 0.0;
   if(scale) {
     x = x * widthFactor;
     y = y * widthFactor;
     //z = z * widthFactor;
+    add = border;
   }
-  return QString("\t\t\tvertex " + QString::number((double)x, 'g') + " " + QString::number((double)y, 'g') + " " + QString::number((double)z, 'g') + "\n");
+  return QString("\t\t\tvertex " + QString::number((double)x + add, 'g') + " " + QString::number((double)y + add, 'g') + " " + QString::number((double)z, 'g') + "\n");
 }
 
 QString MainWindow::endTriangle()
