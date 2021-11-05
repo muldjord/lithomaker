@@ -53,6 +53,12 @@ RenderPage::RenderPage(QWidget *parent) : QWidget(parent)
 {
   QPushButton *resetButton = new QPushButton(tr("Reset all to defaults"));
 
+  CheckBox *enableStabilizersCheckBox = new CheckBox(tr("Enable stabilizers"), "render", "enableStabilizers", true);
+  connect(resetButton, &QPushButton::clicked, enableStabilizersCheckBox, &CheckBox::resetToDefault);
+
+  QLabel *frameSlopeFactorLabel = new QLabel(tr("Frame slope factor:"));
+  LineEdit *frameSlopeFactorLineEdit = new LineEdit("render", "frameSlopeFactor", "1.5");
+  connect(resetButton, &QPushButton::clicked, frameSlopeFactorLineEdit, &LineEdit::resetToDefault);
   /*
   QLabel *delimiterLabel = new QLabel(tr("Delimiter:"));
   ComboBox *delimiterComboBox = new ComboBox("Render", "delimiter", "tab");
@@ -73,8 +79,10 @@ RenderPage::RenderPage(QWidget *parent) : QWidget(parent)
   
   QVBoxLayout *layout = new QVBoxLayout();
   layout->addWidget(resetButton);
+  layout->addWidget(enableStabilizersCheckBox);
+  layout->addWidget(frameSlopeFactorLabel);
+  layout->addWidget(frameSlopeFactorLineEdit);
   /*
-  layout->addWidget(delimiterLabel);
   layout->addWidget(delimiterComboBox);
   layout->addWidget(distanceUnitLabel);
   layout->addWidget(distanceUnitLineEdit);
@@ -89,6 +97,12 @@ ExportPage::ExportPage(QWidget *parent) : QWidget(parent)
 {
   QPushButton *resetButton = new QPushButton(tr("Reset all to defaults"));
 
+  QLabel *stlFormatLabel = new QLabel(tr("STL format (Binary currently not implemented):"));
+  ComboBox *stlFormatComboBox = new ComboBox("export", "stlFormat", "ascii");
+  stlFormatComboBox->addConfigItem("Ascii", "ascii");
+  stlFormatComboBox->addConfigItem("Binary", "binary");
+  stlFormatComboBox->setFromConfig();
+  connect(resetButton, &QPushButton::clicked, stlFormatComboBox, &ComboBox::resetToDefault);
   /*
   QLabel *delimiterLabel = new QLabel(tr("Delimiter:"));
   ComboBox *delimiterComboBox = new ComboBox("Export", "delimiter", "tab");
@@ -109,6 +123,8 @@ ExportPage::ExportPage(QWidget *parent) : QWidget(parent)
   
   QVBoxLayout *layout = new QVBoxLayout();
   layout->addWidget(resetButton);
+  layout->addWidget(stlFormatLabel);
+  layout->addWidget(stlFormatComboBox);
   /*
   layout->addWidget(delimiterLabel);
   layout->addWidget(delimiterComboBox);
