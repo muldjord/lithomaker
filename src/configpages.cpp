@@ -97,7 +97,7 @@ ExportPage::ExportPage(QWidget *parent) : QWidget(parent)
 {
   QPushButton *resetButton = new QPushButton(tr("Reset all to defaults"));
 
-  QLabel *stlFormatLabel = new QLabel(tr("STL format (Binary currently not implemented):"));
+  QLabel *stlFormatLabel = new QLabel(tr("STL format:"));
   ComboBox *stlFormatComboBox = new ComboBox("export", "stlFormat", "ascii");
   stlFormatComboBox->addConfigItem("Ascii", "ascii");
   stlFormatComboBox->addConfigItem("Binary", "binary");
