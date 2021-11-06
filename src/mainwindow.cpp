@@ -201,7 +201,7 @@ void MainWindow::renderStl()
     for(int x = 0; x < image.width() - 1; ++x) {
       if(y == 0) {
         // Close top
-            polygons.append(getVertexString(x + 1, 0, getPixel(image, x + 1, 0) * depthFactor, true));
+        polygons.append(getVertexString(x + 1, 0, getPixel(image, x + 1, 0) * depthFactor, true));
         polygons.append(getVertexString(x, 0, getPixel(image, x, 0) * depthFactor, true));
         polygons.append(getVertexString(x, 0, minThickness, true));
     	
