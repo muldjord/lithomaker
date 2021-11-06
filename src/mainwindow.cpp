@@ -205,25 +205,25 @@ void MainWindow::renderStl()
         polygons.append(getVertexString(x, 0, getPixel(image, x, 0) * depthFactor, true));
         polygons.append(getVertexString(x, 0, minThickness, true));
     	
-            polygons.append(getVertexString(x, 0, minThickness, true));
+        polygons.append(getVertexString(x, 0, minThickness, true));
         polygons.append(getVertexString(x + 1, 0, minThickness, true));
         polygons.append(getVertexString(x + 1, 0, getPixel(image, x + 1, 0) * depthFactor, true));
     
         // Close bottom
-            polygons.append(getVertexString(x, image.height() - 1, minThickness, true));
+        polygons.append(getVertexString(x, image.height() - 1, minThickness, true));
         polygons.append(getVertexString(x, image.height() - 1, getPixel(image, x, image.height() - 1) * depthFactor, true));
         polygons.append(getVertexString(x + 1, image.height() - 1, getPixel(image, x + 1, image.height() - 1) * depthFactor, true));
     	
-            polygons.append(getVertexString(x + 1, image.height() - 1, getPixel(image, x + 1, image.height() - 1) * depthFactor, true));
+        polygons.append(getVertexString(x + 1, image.height() - 1, getPixel(image, x + 1, image.height() - 1) * depthFactor, true));
         polygons.append(getVertexString(x + 1, image.height() - 1, minThickness, true));
         polygons.append(getVertexString(x, image.height() - 1, minThickness, true));
           }
       // The lithophane heightmap
-        polygons.append(getVertexString(x, y, getPixel(image, x, y) * depthFactor, true));
+      polygons.append(getVertexString(x, y, getPixel(image, x, y) * depthFactor, true));
       polygons.append(getVertexString(x + 1, y + 1, getPixel(image, x + 1, y + 1) * depthFactor, true));
       polygons.append(getVertexString(x, y + 1, getPixel(image, x, y + 1) * depthFactor, true));
   
-        polygons.append(getVertexString(x, y, getPixel(image, x, y) * depthFactor, true));
+      polygons.append(getVertexString(x, y, getPixel(image, x, y) * depthFactor, true));
       polygons.append(getVertexString(x + 1, y, getPixel(image, x + 1, y) * depthFactor, true));
       polygons.append(getVertexString(x + 1, y + 1, getPixel(image, x + 1, y + 1) * depthFactor, true));
       }
