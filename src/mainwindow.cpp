@@ -68,7 +68,7 @@ MainWindow::MainWindow()
   inputLayout->addWidget(inputLineEdit);
   inputLayout->addWidget(inputButton);
 
-  QPushButton *renderButton = new QPushButton(tr("Render"));
+  QPushButton *renderButton = new QPushButton(tr("Render and export"));
   connect(renderButton, &QPushButton::clicked, this, &MainWindow::renderStl);
   renderProgress = new QProgressBar(this);
   renderProgress->setMinimum(0);
@@ -81,9 +81,6 @@ MainWindow::MainWindow()
   exportLayout->addWidget(exportLineEdit);
   exportLayout->addWidget(exportButton);
 
-  QPushButton *exportNowButton = new QPushButton(tr("Export"));
-  connect(exportNowButton, &QPushButton::clicked, this, &MainWindow::exportStl);
-
   QVBoxLayout *layout = new QVBoxLayout();
   layout->addWidget(minThicknessLabel);
   layout->addWidget(minThicknessLineEdit);
@@ -95,11 +92,10 @@ MainWindow::MainWindow()
   layout->addWidget(widthLineEdit);
   layout->addWidget(inputLabel);
   layout->addLayout(inputLayout);
-  layout->addWidget(renderProgress);
-  layout->addWidget(renderButton);
   layout->addWidget(exportLabel);
   layout->addLayout(exportLayout);
-  layout->addWidget(exportNowButton);
+  layout->addWidget(renderProgress);
+  layout->addWidget(renderButton);
 
   setCentralWidget(new QWidget());
   centralWidget()->setLayout(layout);
@@ -260,12 +256,16 @@ void MainWindow::renderStl()
   
   //polygons.append("endsolid\n");
   printf("Rendering finished...\n");
+  exportStl();
 }
 
 void MainWindow::exportStl()
 {
   if(polygons.isEmpty()) {
     QMessageBox::warning(this, tr("Empty STL buffer"), tr("There is currently no rendered lithophane in the STL buffer. You need to render one before you can export it."));
+    return;
+  }
+  if(QFileInfo::exists(exportLineEdit->text()) && !settings->value("export/alwaysOverwrite", false).toBool() && QMessageBox::question(this, tr("Overwrite file?"), tr("The export STL file already exists. Do you want to overwrite it?")) != QMessageBox::Yes) {
     return;
   }
 
