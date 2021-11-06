@@ -103,6 +103,9 @@ ExportPage::ExportPage(QWidget *parent) : QWidget(parent)
   stlFormatComboBox->addConfigItem("Binary", "binary");
   stlFormatComboBox->setFromConfig();
   connect(resetButton, &QPushButton::clicked, stlFormatComboBox, &ComboBox::resetToDefault);
+
+  CheckBox *alwaysOverwriteCheckBox = new CheckBox(tr("Always overwrite existing file"), "export", "alwaysOverwrite", false);
+  connect(resetButton, &QPushButton::clicked, alwaysOverwriteCheckBox, &CheckBox::resetToDefault);
   /*
   QLabel *delimiterLabel = new QLabel(tr("Delimiter:"));
   ComboBox *delimiterComboBox = new ComboBox("Export", "delimiter", "tab");
@@ -125,6 +128,7 @@ ExportPage::ExportPage(QWidget *parent) : QWidget(parent)
   layout->addWidget(resetButton);
   layout->addWidget(stlFormatLabel);
   layout->addWidget(stlFormatComboBox);
+  layout->addWidget(alwaysOverwriteCheckBox);
   /*
   layout->addWidget(delimiterLabel);
   layout->addWidget(delimiterComboBox);

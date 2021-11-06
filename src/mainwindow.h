@@ -60,7 +60,8 @@ private:
   int getPixel(const QImage &image, const int &x, const int &y);
   void createActions();
   void createMenus();
-  QString stlString;
+  //QByteArray stlString;
+  QList<QVector3D> polygons;
   QLineEdit *minThicknessLineEdit;
   QLineEdit *totalThicknessLineEdit;
   QLineEdit *borderLineEdit;
@@ -76,17 +77,17 @@ private:
   QMenu *helpMenu;
   QMenuBar *menuBar;
 
-  double depthFactor = -1.0;
-  double widthFactor = -1.0;
-  double border = -1.0;
+  float depthFactor = -1.0;
+  float widthFactor = -1.0;
+  float border = -1.0;
   
-  QString beginTriangle();
-  QString getVertexString(double x, double y, double z, const bool &scale = false);
-  QString endTriangle();
+  QByteArray beginTriangle();
+  QVector3D getVertexString(float x, float y, float z, const bool &scale = false);
+  QByteArray endTriangle();
   
-  QString addStabilizer(const double &x, const double &height);
-  QString addCube(const double &x, const double &y, const double &z, const double &size);
-  QString addFrame(const double &width, const double &height);
+  QList<QVector3D> addStabilizer(const float &x, const float &height);
+  QList<QVector3D> addCube(const float &x, const float &y, const float &z, const float &size);
+  QList<QVector3D> addFrame(const float &width, const float &height);
 };
 
 #endif // __MAINWINDOW_H__
