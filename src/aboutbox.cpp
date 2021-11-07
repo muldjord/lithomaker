@@ -71,7 +71,7 @@ AboutBox::AboutBox(QWidget *parent): QDialog(parent)
   title->setWordWrap(true);
   title->setText(tr("<h1>LithoMaker</h1>"
                     "<h2>Version " VERSION "</h2>"
-                    "Copyright (C) 2021 Lars Bisballe Jensen<br />"
+                    "Copyright (C) 2021 Lars Muldjord<br />"
                     "LithoMaker is free software released under the terms "
                     "of the GNU General Public License. Click the license "
                     "tab for full license information."));
