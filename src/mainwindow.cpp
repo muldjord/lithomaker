@@ -52,7 +52,7 @@ MainWindow::MainWindow()
   minThicknessLineEdit = new QLineEdit(settings->value("main/minThickness", "0.8").toString());
 
   QLabel *totalThicknessLabel = new QLabel(tr("Total thickness (mm):"));
-  totalThicknessLineEdit = new QLineEdit(settings->value("main/totalThickness", "4.0").toString());
+  totalThicknessLineEdit = new QLineEdit(settings->value("main/totalThickness", "3.0").toString());
 
   QLabel *borderLabel = new QLabel(tr("Frame border (mm):"));
   borderLineEdit = new QLineEdit(settings->value("main/frameBorder", "3.0").toString());
