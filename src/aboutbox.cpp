@@ -37,7 +37,7 @@
 
 AboutBox::AboutBox(QWidget *parent): QDialog(parent)
 {
-  setWindowTitle(tr("About Lithomaker"));
+  setWindowTitle(tr("About LithoMaker"));
   setFixedSize(750,500);
 
   // Read AUTHORS data from file
