@@ -58,7 +58,7 @@ MainWindow::MainWindow()
   borderLineEdit = new QLineEdit(settings->value("main/frameBorder", "3.0").toString());
 
   QLabel *widthLabel = new QLabel(tr("Width, including frame borders (mm):"));
-  widthLineEdit = new QLineEdit(settings->value("main/width", "150.0").toString());
+  widthLineEdit = new QLineEdit(settings->value("main/width", "200.0").toString());
 
   QLabel *inputLabel = new QLabel(tr("Input image filename:"));
   inputLineEdit = new QLineEdit(settings->value("main/inputFilePath", "example.png").toString());
