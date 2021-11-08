@@ -44,7 +44,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
   exportPage = new ExportPage();
   
   pagesWidget = new QStackedWidget;
-  pagesWidget->addWidget(mainPage);
+  //pagesWidget->addWidget(mainPage);
   pagesWidget->addWidget(renderPage);
   pagesWidget->addWidget(exportPage);
 
@@ -73,11 +73,13 @@ ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
 
 void ConfigDialog::createIcons()
 {
+  /*
   QListWidgetItem *mainButton = new QListWidgetItem(contentsWidget);
   mainButton->setIcon(QIcon(":mainconfig.png"));
   mainButton->setText(tr("Main"));
   mainButton->setTextAlignment(Qt::AlignHCenter);
   mainButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+  */
 
   QListWidgetItem *renderButton = new QListWidgetItem(contentsWidget);
   renderButton->setIcon(QIcon(":renderconfig.png"));
