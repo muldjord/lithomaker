@@ -7,6 +7,13 @@ LithoMaker is a fairly simple piece of software. It reads the image, inverts it 
 
 ## Release notes
 
+#### Version 0.6.0 (In progress, unreleased)
+* Added validators for variable lineedits
+* Added tooltips for variable lineedits
+* Now checks for grayscale input image and suggests to convert if input image is in color
+* Now checks image resolution and allows suggests resizing before processing
+* Now disables UI buttons when processing to avoid overlap
+
 #### Version 0.5.0 (Nov 7th 2021)
 * First public release
 
