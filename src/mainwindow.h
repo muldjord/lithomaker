@@ -33,6 +33,7 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QProgressBar>
+#include <QPushButton>
 
 class MainWindow : public QMainWindow
 {
@@ -52,9 +53,11 @@ private slots:
   void showAbout();
   void showPreferences();
   void inputSelect();
-  void exportSelect();
+  void outputSelect();
   
 private:
+  void enableUi();
+  void disableUi();
   void renderStl();
   void exportStl();
   int getPixel(const QImage &image, const int &x, const int &y);
@@ -66,9 +69,12 @@ private:
   QLineEdit *totalThicknessLineEdit;
   QLineEdit *borderLineEdit;
   QLineEdit *widthLineEdit;
+  QPushButton *inputButton;
   QLineEdit *inputLineEdit;
+  QPushButton *outputButton;
   QProgressBar *renderProgress;
-  QLineEdit *exportLineEdit;
+  QPushButton *renderButton;
+  QLineEdit *outputLineEdit;
   QAction *quitAct;
   QAction *preferencesAct;
   QAction *aboutAct;

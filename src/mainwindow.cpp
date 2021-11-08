@@ -35,6 +35,8 @@
 
 extern QSettings *settings;
 
+constexpr int maxSize = 2000;
+
 MainWindow::MainWindow()
 {
   if(settings->contains("main/windowState")) {
@@ -48,39 +50,51 @@ MainWindow::MainWindow()
   createActions();
   createMenus();
 
+  QDoubleValidator *thicknessValidator = new QDoubleValidator(0.8, 10.0, 1);
+  QDoubleValidator *borderValidator = new QDoubleValidator(2.0, 50.0, 1);
+  QDoubleValidator *widthValidator = new QDoubleValidator(20.0, 400.0, 1);
+
   QLabel *minThicknessLabel = new QLabel(tr("Minimum thickness (mm):"));
   minThicknessLineEdit = new QLineEdit(settings->value("main/minThickness", "0.8").toString());
-
+  minThicknessLineEdit->setToolTip(tr("Allowed range: 0.8 to 10.0, 1 decimal"));
+  minThicknessLineEdit->setValidator(thicknessValidator);
+  
   QLabel *totalThicknessLabel = new QLabel(tr("Total thickness (mm):"));
   totalThicknessLineEdit = new QLineEdit(settings->value("main/totalThickness", "3.0").toString());
+  totalThicknessLineEdit->setToolTip(tr("Allowed range: 0.8 to 10.0, 1 decimal"));
+  totalThicknessLineEdit->setValidator(thicknessValidator);
 
   QLabel *borderLabel = new QLabel(tr("Frame border (mm):"));
   borderLineEdit = new QLineEdit(settings->value("main/frameBorder", "3.0").toString());
+  borderLineEdit->setToolTip(tr("Allowed range: 2.0 to 50.0, 1 decimal"));
+  borderLineEdit->setValidator(borderValidator);
 
   QLabel *widthLabel = new QLabel(tr("Width, including frame borders (mm):"));
   widthLineEdit = new QLineEdit(settings->value("main/width", "200.0").toString());
+  widthLineEdit->setToolTip(tr("Allowed range: 20.0 to 400.0, 1 decimal"));
+  widthLineEdit->setValidator(widthValidator);
 
   QLabel *inputLabel = new QLabel(tr("Input image filename:"));
   inputLineEdit = new QLineEdit(settings->value("main/inputFilePath", "example.png").toString());
-  QPushButton *inputButton = new QPushButton(tr("..."));
+  inputButton = new QPushButton(tr("..."));
   connect(inputButton, &QPushButton::clicked, this, &MainWindow::inputSelect);
   QHBoxLayout *inputLayout = new QHBoxLayout();
   inputLayout->addWidget(inputLineEdit);
   inputLayout->addWidget(inputButton);
 
-  QPushButton *renderButton = new QPushButton(tr("Render and export"));
+  QLabel *outputLabel = new QLabel(tr("Output STL filename:"));
+  outputLineEdit = new QLineEdit(settings->value("main/outputFilePath", "lithophane.stl").toString());
+  outputButton = new QPushButton(tr("..."));
+  connect(outputButton, &QPushButton::clicked, this, &MainWindow::outputSelect);
+  QHBoxLayout *outputLayout = new QHBoxLayout();
+  outputLayout->addWidget(outputLineEdit);
+  outputLayout->addWidget(outputButton);
+
+  renderButton = new QPushButton(tr("Render and export"));
   connect(renderButton, &QPushButton::clicked, this, &MainWindow::renderStl);
   renderProgress = new QProgressBar(this);
   renderProgress->setMinimum(0);
   
-  QLabel *exportLabel = new QLabel(tr("Export STL filename:"));
-  exportLineEdit = new QLineEdit(settings->value("main/exportFilePath", "lithophane.stl").toString());
-  QPushButton *exportButton = new QPushButton(tr("..."));
-  connect(exportButton, &QPushButton::clicked, this, &MainWindow::exportSelect);
-  QHBoxLayout *exportLayout = new QHBoxLayout();
-  exportLayout->addWidget(exportLineEdit);
-  exportLayout->addWidget(exportButton);
-
   QVBoxLayout *layout = new QVBoxLayout();
   layout->addWidget(minThicknessLabel);
   layout->addWidget(minThicknessLineEdit);
@@ -92,8 +106,8 @@ MainWindow::MainWindow()
   layout->addWidget(widthLineEdit);
   layout->addWidget(inputLabel);
   layout->addLayout(inputLayout);
-  layout->addWidget(exportLabel);
-  layout->addLayout(exportLayout);
+  layout->addWidget(outputLabel);
+  layout->addLayout(outputLayout);
   layout->addWidget(renderProgress);
   layout->addWidget(renderButton);
 
@@ -112,7 +126,7 @@ MainWindow::~MainWindow()
   settings->setValue("main/frameBorder", borderLineEdit->text());
   settings->setValue("main/width", widthLineEdit->text());
   settings->setValue("main/inputFilePath", inputLineEdit->text());
-  settings->setValue("main/exportFilePath", exportLineEdit->text());
+  settings->setValue("main/outputFilePath", outputLineEdit->text());
 }
 
 void MainWindow::createActions()
@@ -169,14 +183,37 @@ void MainWindow::renderStl()
     QMessageBox::warning(this, tr("File not found"), tr("Input file doesn't exist. Please check filename and permissions."));
     return;
   }
+  if(!minThicknessLineEdit->hasAcceptableInput() ||
+     !totalThicknessLineEdit->hasAcceptableInput() ||
+     !borderLineEdit->hasAcceptableInput() ||
+     !widthLineEdit->hasAcceptableInput()) {
+    QMessageBox::critical(this, tr("Invalid format"), tr("One or more of the variables are invalid. Hold the mouse pointer over the input fields to see valid ranges and formats."));
+    return;
+  }
+
   if(borderLineEdit->text().toFloat() * 2 > widthLineEdit->text().toFloat()) {
     QMessageBox::warning(this, tr("Border too thick"), tr("The chosen frame border size exceeds the size of the total lithophane width. Please correct this."));
     return;
   }
+
+  disableUi();
   
   printf("Rendering STL...\n");
   polygons.clear();
   QImage image(inputLineEdit->text());
+  if((image.width() > maxSize || image.height() > maxSize) &&
+     QMessageBox::question(this, tr("Large image"), tr("The input image is quite large. It is recommended to keep it at a resolution lower or equal to ") + QString::number(maxSize) + " x " + QString::number(maxSize) + tr(" pixels to avoid an unnecessarily complex 3D mesh. Do you want LithoMaker to resize the image before processing it?")) == QMessageBox::Yes) {
+    if(image.width() > image.height()) {
+      image = image.scaledToWidth(maxSize);
+    } else {
+      image = image.scaledToHeight(maxSize);
+    }
+  }
+  if(image.format() != QImage::Format_Grayscale8 &&
+     image.format() != QImage::Format_Grayscale16 &&
+     QMessageBox::question(this, tr("Not grayscale"), tr("The image is reported to not be grayscale. Do you want LithoMaker to convert it to grayscale before processing it?")) == QMessageBox::Yes) {
+    image = image.convertToFormat(QImage::Format_Grayscale16);
+  }
   image.invertPixels();
   border = borderLineEdit->text().toFloat();
   depthFactor = (totalThicknessLineEdit->text().toFloat() - minThicknessLineEdit->text().toFloat()) / 255.0;
@@ -263,17 +300,19 @@ void MainWindow::exportStl()
 {
   if(polygons.isEmpty()) {
     QMessageBox::warning(this, tr("Empty STL buffer"), tr("There is currently no rendered lithophane in the STL buffer. You need to render one before you can export it."));
+    enableUi();
     return;
   }
-  if(QFileInfo::exists(exportLineEdit->text()) && !settings->value("export/alwaysOverwrite", false).toBool() && QMessageBox::question(this, tr("Overwrite file?"), tr("The export STL file already exists. Do you want to overwrite it?")) != QMessageBox::Yes) {
+  if(QFileInfo::exists(outputLineEdit->text()) && !settings->value("export/alwaysOverwrite", false).toBool() && QMessageBox::question(this, tr("Overwrite file?"), tr("The output STL file already exists. Do you want to overwrite it?")) != QMessageBox::Yes) {
+    enableUi();
     return;
   }
 
-  printf("Exporting to file: '%s'... ", exportLineEdit->text().toStdString().c_str());
+  printf("Exporting to file: '%s'... ", outputLineEdit->text().toStdString().c_str());
   
   if(settings->value("export/stlFormat", "binary").toString() == "binary") {
     // Export as binary
-    std::ofstream out(exportLineEdit->text().toStdString(), std::ios::binary);
+    std::ofstream out(outputLineEdit->text().toStdString(), std::ios::binary);
     if(out.good()) {
       char title[80];
       memset(title, 0, 80);
@@ -317,7 +356,7 @@ void MainWindow::exportStl()
     }
   } else if(settings->value("export/stlFormat", "binary").toString() == "ascii") {
     // Export as ascii
-    QFile stlFile(exportLineEdit->text());
+    QFile stlFile(outputLineEdit->text());
     if(stlFile.open(QIODevice::WriteOnly)) {
       stlFile.write("solid lithophane\n");
       for(int a = 0; a < polygons.length(); a += 3) {
@@ -338,15 +377,18 @@ void MainWindow::exportStl()
       QMessageBox::warning(this, tr("Export failed"), tr("File could not be opened for writing. Please check export filename and try again."));
     }
   }
+  enableUi();
 }
 
 QList<QVector3D> MainWindow::addStabilizer(const float &x, const float &height)
 {
-  float z = totalThicknessLineEdit->text().toFloat() - minThicknessLineEdit->text().toFloat() + 1;
   float depth = height * 0.5;
+  float z;
 
   QList<QVector3D> stabilizer;
+
   // Front
+  z = totalThicknessLineEdit->text().toFloat() - minThicknessLineEdit->text().toFloat() + 1;
   stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z));
   stabilizer.append(getVertexString(x + (border < 4?border:4), height, z));
   stabilizer.append(getVertexString(x, height, z));
@@ -384,8 +426,8 @@ QList<QVector3D> MainWindow::addStabilizer(const float &x, const float &height)
   stabilizer.append(addCube(x, height - 4, z - 1, 1));
   stabilizer.append(addCube(x + (border < 4?border:4) - 1, height - 4, z - 1, 1));
 
-  z = (minThicknessLineEdit->text().toFloat() * -1) - 1;
   // Back
+  z = (minThicknessLineEdit->text().toFloat() * -1) - 1;
   stabilizer.append(getVertexString(x, height, z));
   stabilizer.append(getVertexString(x + (border < 4?border:4), height, z));
   stabilizer.append(getVertexString(x + (border < 4?border:4), 0, z));
@@ -620,7 +662,6 @@ QVector3D MainWindow::getVertexString(float x, float y, float z, const bool &sca
     //z = z * widthFactor;
     add = border;
   }
-  //return QByteArray("\t\t\tvertex " + QByteArray::number((float)x + add, 'g') + " " + QByteArray::number((float)y + add, 'g') + " " + QByteArray::number((float)z, 'g') + "\n");
   return QVector3D(x + add, y + add, z);
 }
 
@@ -637,13 +678,27 @@ void MainWindow::inputSelect()
   }
 }
 
-void MainWindow::exportSelect()
+void MainWindow::outputSelect()
 {
-  QString selectedFile = QFileDialog::getSaveFileName(this, tr("Enter export file"), QFileInfo(exportLineEdit->text()).absolutePath(), "*.stl");
+  QString selectedFile = QFileDialog::getSaveFileName(this, tr("Enter output file"), QFileInfo(outputLineEdit->text()).absolutePath(), "*.stl");
   if(selectedFile != QByteArray()) {
     if(selectedFile.right(4).toLower() != ".stl") {
       selectedFile.append(".stl");
     }
-    exportLineEdit->setText(selectedFile);
+    outputLineEdit->setText(selectedFile);
   }
+}
+
+void MainWindow::enableUi()
+{
+  inputButton->setEnabled(true);
+  outputButton->setEnabled(true);
+  renderButton->setEnabled(true);
+}
+
+void MainWindow::disableUi()
+{
+  inputButton->setEnabled(false);
+  outputButton->setEnabled(false);
+  renderButton->setEnabled(false);
 }
