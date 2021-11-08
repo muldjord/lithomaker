@@ -275,8 +275,10 @@ void MainWindow::exportStl()
     // Export as binary
     std::ofstream out(exportLineEdit->text().toStdString(), std::ios::binary);
     if(out.good()) {
-      char title[] = "lithophane                                                                                ";
-      out.write((char *)&title, sizeof(char ) * 80);
+      char title[80];
+      memset(title, 0, 80);
+      strcpy(title, "lithophane");
+      out.write((char *)&title, 80);
       quint32 polCount = polygons.length() / 3;
       out.write((char *)&polCount, sizeof(quint32));;
       quint16 attrByteCount = 0;
@@ -285,9 +287,10 @@ void MainWindow::exportStl()
         out.write((char *)&normal, sizeof(float));
         out.write((char *)&normal, sizeof(float));
         out.write((char *)&normal, sizeof(float));
-        float x = polygons.at(a).x();
-        float y = polygons.at(a).y();
-        float z = polygons.at(a).z();
+        float x, y, z;
+        x = polygons.at(a).x();
+        y = polygons.at(a).y();
+        z = polygons.at(a).z();
         out.write((char *)&x, sizeof(float));
         out.write((char *)&y, sizeof(float));
         out.write((char *)&z, sizeof(float));
