@@ -91,7 +91,7 @@ MainWindow::MainWindow()
   outputLayout->addWidget(outputButton);
 
   renderButton = new QPushButton(tr("Render and export"));
-  connect(renderButton, &QPushButton::clicked, this, &MainWindow::renderStl);
+  connect(renderButton, &QPushButton::clicked, this, &MainWindow::createMesh);
   renderProgress = new QProgressBar(this);
   renderProgress->setMinimum(0);
   
@@ -177,7 +177,7 @@ void MainWindow::showPreferences()
   preferences.exec();
 }
 
-void MainWindow::renderStl()
+void MainWindow::createMesh()
 {
   if(!QFileInfo::exists(inputLineEdit->text())) {
     QMessageBox::warning(this, tr("File not found"), tr("Input file doesn't exist. Please check filename and permissions."));
@@ -274,18 +274,21 @@ void MainWindow::renderStl()
   renderProgress->setFormat("Ready!");
 
   // Backside
-  polygons.append(getVertex(0, 0, minThickness, true));
-  polygons.append(getVertex(image.width() - 1, image.height() - 1, minThickness, true));
   polygons.append(getVertex(0, image.height() - 1, minThickness, true));
-
-  polygons.append(getVertex(0, 0, minThickness, true));
-  polygons.append(getVertex(image.width() - 1, 0, minThickness, true));
   polygons.append(getVertex(image.width() - 1, image.height() - 1, minThickness, true));
+  polygons.append(getVertex(0, 0, minThickness, true));
+
+  polygons.append(getVertex(image.width() - 1, image.height() - 1, minThickness, true));
+  polygons.append(getVertex(image.width() - 1, 0, minThickness, true));
+  polygons.append(getVertex(0, 0, minThickness, true));
 
   // Stabilizers
-  if(settings->value("render/enableStabilizers", true).toBool()) {
-    polygons.append(addStabilizer(0, ((border * 2) + (image.height() * widthFactor)) * 0.15));
-    polygons.append(addStabilizer(widthLineEdit->text().toFloat() - (border < 4?border:4), ((border * 2) + (image.height() * widthFactor)) * 0.15));
+  double totalHeight = ((border * 2) + (image.height() * widthFactor));
+  double stabilizerHeightFactor = settings->value("render/stabilizerHeightFactor", 0.15).toDouble();
+  if(settings->value("render/enableStabilizers", true).toBool() &&
+     totalHeight > settings->value("render/stabilizerThreshold", 60.0).toDouble()) {
+    polygons.append(addStabilizer(0, ((border * 2) + (image.height() * widthFactor)) * stabilizerHeightFactor));
+    polygons.append(addStabilizer(widthLineEdit->text().toFloat() - (border < 4?border:4), totalHeight * stabilizerHeightFactor));
   }
 
   // Frame
@@ -386,54 +389,57 @@ QList<QVector3D> MainWindow::addStabilizer(const float &x, const float &height)
   float z;
 
   QList<QVector3D> stabilizer;
+
+  double zDelta = (settings->value("render/permanentStabilizers", false).toBool()?1.0:0.0);
   
-  z = totalThicknessLineEdit->text().toFloat() - minThicknessLineEdit->text().toFloat() + 1;
-  stabilizer.append(getVertex(x, 0.000000, z + 1));
+  // Front
+  z = totalThicknessLineEdit->text().toFloat() - minThicknessLineEdit->text().toFloat();
+  stabilizer.append(getVertex(x, 0.000000, z + 1 - zDelta));
   stabilizer.append(getVertex(x, 0.000000, z + depth));
   stabilizer.append(getVertex(x, height, z + 3));
                     
   stabilizer.append(getVertex(x, height, z + 3));
-  stabilizer.append(getVertex(x, height, z + 1));
-  stabilizer.append(getVertex(x, height - 1, z + 1));
+  stabilizer.append(getVertex(x, height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x, height - 1, z + 1 - zDelta));
 
   stabilizer.append(getVertex(x, height, z + 3));
-  stabilizer.append(getVertex(x, height - 1, z + 1));
-  stabilizer.append(getVertex(x, 0.000000, z + 1));
+  stabilizer.append(getVertex(x, height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x, 0.000000, z + 1 - zDelta));
 
   stabilizer.append(getVertex(x + (border < 4?border:4), height, z + 3));
   stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + depth));
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + 1));
+  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + 1 - zDelta));
 
-  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height, z + 1));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z + 1 - zDelta));
   stabilizer.append(getVertex(x + (border < 4?border:4), height, z + 3));
 
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z + 1));
+  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z + 1 - zDelta));
   stabilizer.append(getVertex(x + (border < 4?border:4), height, z + 3));
 
-  stabilizer.append(getVertex(x + 1, height, z + 1));
-  stabilizer.append(getVertex(x, height, z + 1));
+  stabilizer.append(getVertex(x + 1, height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x, height, z + 1 - zDelta));
   stabilizer.append(getVertex(x, height, z + 3));
 
   stabilizer.append(getVertex(x, height, z + 3));
   stabilizer.append(getVertex(x + (border < 4?border:4), height, z + 3));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height, z + 1));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z + 1 - zDelta));
 
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z + 1));
-  stabilizer.append(getVertex(x + 1, height, z + 1));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + 1, height, z + 1 - zDelta));
   stabilizer.append(getVertex(x, height, z + 3));
 
   stabilizer.append(getVertex(x, height, z + 3));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z + 1));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z + 1 - zDelta));
 
   stabilizer.append(getVertex(x, 0.000000, z + depth));
-  stabilizer.append(getVertex(x, 0.000000, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + 1));
+  stabilizer.append(getVertex(x, 0.000000, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + 1 - zDelta));
 
   stabilizer.append(getVertex(x, 0.000000, z + depth));
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + 1));
+  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + 1 - zDelta));
   stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + depth));
 
   stabilizer.append(getVertex(x, height, z + 3));
@@ -444,241 +450,273 @@ QList<QVector3D> MainWindow::addStabilizer(const float &x, const float &height)
   stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + depth));
   stabilizer.append(getVertex(x + (border < 4?border:4), height, z + 3));
 
-  stabilizer.append(getVertex(x + 1, height - 1, z + 1));
-  stabilizer.append(getVertex(x + 1, height, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z + 1));
+  stabilizer.append(getVertex(x + 1, height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + 1, height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z + 1 - zDelta));
 
-  stabilizer.append(getVertex(x + 1, height - 1, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z + 1));
+  stabilizer.append(getVertex(x + 1, height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z + 1 - zDelta));
 
-  stabilizer.append(getVertex(x + 1, height - 1, 0.000000));
-  stabilizer.append(getVertex(x + 1, height, 0.000000));
-  stabilizer.append(getVertex(x, height, 0.000000));
-
-  stabilizer.append(getVertex(x + 1, height - 1, 0.000000));
-  stabilizer.append(getVertex(x, height, 0.000000));
-  stabilizer.append(getVertex(x, height - 1, 0.000000));
-
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, 0.000000));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, 0.000000));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height, 0.000000));
-
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, 0.000000));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height, 0.000000));
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, 0.000000));
-
-  stabilizer.append(getVertex(x + (border < 4?border:4), height, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, 0.000000));
-
-  stabilizer.append(getVertex(x + (border < 4?border:4), height, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, 0.000000));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height, 0.000000));
-
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height, 0.000000));
-
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height, 0.000000));
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, 0.000000));
-
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, 0.000000));
-
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, 0.000000));
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, 0.000000));
-
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, 0.000000));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, 0.000000));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z + 1));
-
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, 0.000000));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z + 1));
-
-  stabilizer.append(getVertex(x, height, z + 1));
-  stabilizer.append(getVertex(x + 1, height, z + 1));
-  stabilizer.append(getVertex(x + 1, height, 0.000000));
-
-  stabilizer.append(getVertex(x, height, z + 1));
-  stabilizer.append(getVertex(x + 1, height, 0.000000));
-  stabilizer.append(getVertex(x, height, 0.000000));
-
-  stabilizer.append(getVertex(x, height - 1, z + 1));
-  stabilizer.append(getVertex(x, height, z + 1));
-  stabilizer.append(getVertex(x, height, 0.000000));
-
-  stabilizer.append(getVertex(x, height - 1, z + 1));
-  stabilizer.append(getVertex(x, height, 0.000000));
-  stabilizer.append(getVertex(x, height - 1, 0.000000));
-
-  stabilizer.append(getVertex(x + 1, height, z + 1));
-  stabilizer.append(getVertex(x + 1, height - 1, z + 1));
-  stabilizer.append(getVertex(x + 1, height - 1, 0.000000));
-
-  stabilizer.append(getVertex(x + 1, height, z + 1));
-  stabilizer.append(getVertex(x + 1, height - 1, 0.000000));
-  stabilizer.append(getVertex(x + 1, height, 0.000000));
-
-  stabilizer.append(getVertex(x + 1, height - 1, 0.000000));
-  stabilizer.append(getVertex(x + 1, height - 1, z + 1));
-  stabilizer.append(getVertex(x, height - 1, z + 1));
-
-  stabilizer.append(getVertex(x + 1, height - 1, 0.000000));
-  stabilizer.append(getVertex(x, height - 1, z + 1));
-  stabilizer.append(getVertex(x, height - 1, 0.000000));
-
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + 1));
-  stabilizer.append(getVertex(x, 0.000000, z + 1));
-  stabilizer.append(getVertex(x, height - 1, z + 1));
-
-  stabilizer.append(getVertex(x, height - 1, z + 1));
-  stabilizer.append(getVertex(x + 1, height - 1, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z + 1));
-
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + 1));
-
-  stabilizer.append(getVertex(x, height - 1, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z + 1));
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + 1));
-
-  // Front
-  /*
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0, z));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height, z));
+  stabilizer.append(getVertex(x + 1, height - 1, z));
+  stabilizer.append(getVertex(x + 1, height, z));
   stabilizer.append(getVertex(x, height, z));
 
+  stabilizer.append(getVertex(x + 1, height - 1, z));
   stabilizer.append(getVertex(x, height, z));
-  stabilizer.append(getVertex(x, 0, z));
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0, z));
+  stabilizer.append(getVertex(x, height - 1, z));
 
-  stabilizer.append(getVertex(x, 0, z));
-  stabilizer.append(getVertex(x, 0, z + depth));
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0, z));
-
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0, z));
-  stabilizer.append(getVertex(x, 0, z + depth));
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0, z + depth));
-
-  stabilizer.append(getVertex(x, 0, z));
-  stabilizer.append(getVertex(x, height, z));
-  stabilizer.append(getVertex(x, 0, z + depth));
-
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0, z + depth));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height, z));
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0, z));
-
-  stabilizer.append(getVertex(x, 0, z + depth));
-  stabilizer.append(getVertex(x, height, z));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z));
   stabilizer.append(getVertex(x + (border < 4?border:4), height, z));
 
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z));
   stabilizer.append(getVertex(x + (border < 4?border:4), height, z));
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0, z + depth));
-  stabilizer.append(getVertex(x, 0, z + depth));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z));
 
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z));
 
-  stabilizer.append(addCube(x, height - 4, z - 1, 1));
-  stabilizer.append(addCube(x + (border < 4?border:4) - 1, height - 4, z - 1, 1));
-  */
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z + 1 - zDelta));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z + 1 - zDelta));
+
+  stabilizer.append(getVertex(x, height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + 1, height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + 1, height, z));
+
+  stabilizer.append(getVertex(x, height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + 1, height, z));
+  stabilizer.append(getVertex(x, height, z));
+
+  stabilizer.append(getVertex(x, height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x, height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x, height, z));
+
+  stabilizer.append(getVertex(x, height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x, height, z));
+  stabilizer.append(getVertex(x, height - 1, z));
+
+  stabilizer.append(getVertex(x + 1, height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + 1, height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + 1, height - 1, z));
+
+  stabilizer.append(getVertex(x + 1, height, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + 1, height - 1, z));
+  stabilizer.append(getVertex(x + 1, height, z));
+
+  stabilizer.append(getVertex(x + 1, height - 1, z));
+  stabilizer.append(getVertex(x + 1, height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x, height - 1, z + 1 - zDelta));
+
+  stabilizer.append(getVertex(x + 1, height - 1, z));
+  stabilizer.append(getVertex(x, height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x, height - 1, z));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + 1 - zDelta));
+  stabilizer.append(getVertex(x, 0.000000, z + 1 - zDelta));
+  stabilizer.append(getVertex(x, height - 1, z + 1 - zDelta));
+
+  stabilizer.append(getVertex(x, height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + 1, height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z + 1 - zDelta));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + 1 - zDelta));
+
+  stabilizer.append(getVertex(x, height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z + 1 - zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + 1 - zDelta));
+
   // Back
-  z = (minThicknessLineEdit->text().toFloat() * -1) - 1;
-  stabilizer.append(getVertex(x, height, z));
+  z = (minThicknessLineEdit->text().toFloat() * -1);
+  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z - depth));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z - 3));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z - 3));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z - 1 + zDelta));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z - 3));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z - 1 + zDelta));
+
+  stabilizer.append(getVertex(x, height, z - 3));
+  stabilizer.append(getVertex(x, 0.000000, z - depth));
+  stabilizer.append(getVertex(x, 0.000000, z - 1 + zDelta));
+
+  stabilizer.append(getVertex(x, height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x, height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x, height, z - 3));
+
+  stabilizer.append(getVertex(x, 0.000000, z - 1 + zDelta));
+  stabilizer.append(getVertex(x, height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x, height, z - 3));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z - 3));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z - 3));
+  stabilizer.append(getVertex(x, height, z - 3));
+  stabilizer.append(getVertex(x, height, z - 1 + zDelta));
+
+  stabilizer.append(getVertex(x + 1, height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z - 3));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z - 3));
+  stabilizer.append(getVertex(x, height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + 1, height, z - 1 + zDelta));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z - depth));
+  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z - 1 + zDelta));
+  stabilizer.append(getVertex(x, 0.000000, z - 1 + zDelta));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z - depth));
+  stabilizer.append(getVertex(x, 0.000000, z - 1 + zDelta));
+  stabilizer.append(getVertex(x, 0.000000, z - depth));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z - 3));
+  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z - depth));
+  stabilizer.append(getVertex(x, 0.000000, z - depth));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z - 3));
+  stabilizer.append(getVertex(x, 0.000000, z - depth));
+  stabilizer.append(getVertex(x, height, z - 3));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + 1, height, z - 1 + zDelta));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + 1, height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + 1, height - 1, z - 1 + zDelta));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z));
   stabilizer.append(getVertex(x + (border < 4?border:4), height, z));
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0, z));
 
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0, z));
-  stabilizer.append(getVertex(x, 0, z));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z));
+
+  stabilizer.append(getVertex(x + 1, height - 1, z));
+  stabilizer.append(getVertex(x, height - 1, z));
   stabilizer.append(getVertex(x, height, z));
 
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0, z));
-  stabilizer.append(getVertex(x, 0, z - depth));
-  stabilizer.append(getVertex(x, 0, z));
-
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0, z - depth));
-  stabilizer.append(getVertex(x, 0, z - depth));
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0, z));
-
-  stabilizer.append(getVertex(x, 0, z - depth));
+  stabilizer.append(getVertex(x + 1, height - 1, z));
   stabilizer.append(getVertex(x, height, z));
-  stabilizer.append(getVertex(x, 0, z));
+  stabilizer.append(getVertex(x + 1, height, z));
 
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0, z));
-  stabilizer.append(getVertex(x + (border < 4?border:4), height, z));
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0, z - depth));
+  stabilizer.append(getVertex(x, height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x, height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x, height - 1, z));
 
-  stabilizer.append(getVertex(x + (border < 4?border:4), height, z));
+  stabilizer.append(getVertex(x, height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x, height - 1, z));
   stabilizer.append(getVertex(x, height, z));
-  stabilizer.append(getVertex(x, 0, z - depth));
 
-  stabilizer.append(getVertex(x, 0, z - depth));
-  stabilizer.append(getVertex(x + (border < 4?border:4), 0, z - depth));
+  stabilizer.append(getVertex(x + 1, height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x, height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x, height, z));
+
+  stabilizer.append(getVertex(x + 1, height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x, height, z));
+  stabilizer.append(getVertex(x + 1, height, z));
+
+  stabilizer.append(getVertex(x + 1, height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + 1, height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + 1, height, z));
+
+  stabilizer.append(getVertex(x + 1, height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + 1, height, z));
+  stabilizer.append(getVertex(x + 1, height - 1, z));
+
+  stabilizer.append(getVertex(x + 1, height - 1, z));
+  stabilizer.append(getVertex(x, height - 1, z));
+  stabilizer.append(getVertex(x, height - 1, z - 1 + zDelta));
+
+  stabilizer.append(getVertex(x + 1, height - 1, z));
+  stabilizer.append(getVertex(x, height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + 1, height - 1, z - 1 + zDelta));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z));
   stabilizer.append(getVertex(x + (border < 4?border:4), height, z));
 
-  // Back cubes
-  stabilizer.append(addCube(x, height - 4, z, 1));
-  stabilizer.append(addCube(x + (border < 4?border:4) - 1, height - 4, z, 1));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height, z));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height, z));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z - 1 + zDelta));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z));
+
+  stabilizer.append(getVertex(x, 0.000000, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z - 1 + zDelta));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + (border < 4?border:4) - 1, height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + 1, height - 1, z - 1 + zDelta));
+
+  stabilizer.append(getVertex(x + 1, height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x, height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x, 0.000000, z - 1 + zDelta));
+
+  stabilizer.append(getVertex(x + (border < 4?border:4), height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x + 1, height - 1, z - 1 + zDelta));
+  stabilizer.append(getVertex(x, 0.000000, z - 1 + zDelta));
 
   return stabilizer;
-}
-
-QList<QVector3D> MainWindow::addCube(const float &x, const float &y, const float &z, const float &size)
-{
-  QList<QVector3D> cube;
-  cube.append(getVertex(x, y, z));
-  cube.append(getVertex(x, y + size, z));
-  cube.append(getVertex(x, y + size, z + size));
-
-  cube.append(getVertex(x, y + size, z + size));
-  cube.append(getVertex(x, y, z + size));
-  cube.append(getVertex(x, y, z));
-
-  cube.append(getVertex(x, y, z + size));
-  cube.append(getVertex(x, y + size, z + size));
-  cube.append(getVertex(x + size, y + size, z + size));
-
-  cube.append(getVertex(x + size, y + size, z + size));
-  cube.append(getVertex(x + size, y, z + size));
-  cube.append(getVertex(x, y, z + size));
-
-  cube.append(getVertex(x, y + size, z));
-  cube.append(getVertex(x + size, y + size, z));
-  cube.append(getVertex(x, y + size, z + size));
-
-  cube.append(getVertex(x, y + size, z + size));
-  cube.append(getVertex(x + size, y + size, z));
-  cube.append(getVertex(x + size, y + size, z + size));
-
-  cube.append(getVertex(x, y, z));
-  cube.append(getVertex(x + size, y, z));
-  cube.append(getVertex(x, y + size, z));
-
-  cube.append(getVertex(x, y + size, z));
-  cube.append(getVertex(x + size, y, z));
-  cube.append(getVertex(x + size, y + size, z));
-
-  cube.append(getVertex(x, y, z));
-  cube.append(getVertex(x, y, z + size));
-  cube.append(getVertex(x + size, y, z));
-
-  cube.append(getVertex(x + size, y, z));
-  cube.append(getVertex(x, y, z + size));
-  cube.append(getVertex(x + size, y, z + size));
-
-  cube.append(getVertex(x + size, y, z));
-  cube.append(getVertex(x + size, y, z + size));
-  cube.append(getVertex(x + size, y + size, z));
-
-  cube.append(getVertex(x + size, y + size, z));
-  cube.append(getVertex(x + size, y, z + size));
-  cube.append(getVertex(x + size, y + size, z + size));
-
-  return cube;
 }
 
 QList<QVector3D> MainWindow::addFrame(const float &width, const float &height)

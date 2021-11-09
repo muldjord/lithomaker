@@ -58,7 +58,7 @@ private slots:
 private:
   void enableUi();
   void disableUi();
-  void renderStl();
+  void createMesh();
   void exportStl();
   int getPixel(const QImage &image, const int &x, const int &y);
   void createActions();
@@ -92,7 +92,6 @@ private:
   QByteArray endTriangle();
   
   QList<QVector3D> addStabilizer(const float &x, const float &height);
-  QList<QVector3D> addCube(const float &x, const float &y, const float &z, const float &size);
   QList<QVector3D> addFrame(const float &width, const float &height);
 };
 
