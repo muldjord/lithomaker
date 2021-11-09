@@ -11,8 +11,12 @@ LithoMaker is a fairly simple piece of software. It reads the image, inverts it 
 * Added validators for variable lineedits
 * Added tooltips for variable lineedits
 * Now checks for grayscale input image and suggests to convert if input image is in color
-* Now checks image resolution and allows suggests resizing before processing
-* Now disables UI buttons when processing to avoid overlap
+* Now checks image resolution and suggests resizing before processing
+* Now disables UI buttons when processing to avoid queing multiple clicks
+* Fixed stabilizer meshes
+* Fixed lithophane backside mesh
+* Made it possible to make stabilizers permanent
+* Made more mesh variables / factors configurable
 
 #### Version 0.5.0 (Nov 7th 2021)
 * First public release
@@ -23,5 +27,4 @@ LithoMaker is a fairly simple piece of software. It reads the image, inverts it 
 #### Todo
 * Segment / manifold backside of lithophane to allow bending in third-party software
 * Segment frame to allow bending in third-party software
-* Flatten top of stabilizers
 * Move mesh related functions to separate files / classes
