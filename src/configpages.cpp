@@ -56,6 +56,17 @@ RenderPage::RenderPage(QWidget *parent) : QWidget(parent)
   CheckBox *enableStabilizersCheckBox = new CheckBox(tr("Enable stabilizers"), "render", "enableStabilizers", true);
   connect(resetButton, &QPushButton::clicked, enableStabilizersCheckBox, &CheckBox::resetToDefault);
 
+  CheckBox *permanentStabilizersCheckBox = new CheckBox(tr("Make stabilizers permanent"), "render", "permanentStabilizers", false);
+  connect(resetButton, &QPushButton::clicked, permanentStabilizersCheckBox, &CheckBox::resetToDefault);
+
+  QLabel *stabilizerThresholdLabel = new QLabel(tr("Minimum height before adding stabilizers:"));
+  LineEdit *stabilizerThresholdLineEdit = new LineEdit("render", "stabilizerThreshold", "60.0");
+  connect(resetButton, &QPushButton::clicked, stabilizerThresholdLineEdit, &LineEdit::resetToDefault);
+
+  QLabel *stabilizerHeightFactorLabel = new QLabel(tr("Stabilizer height factor:"));
+  LineEdit *stabilizerHeightFactorLineEdit = new LineEdit("render", "stabilizerHeightFactor", "0.15");
+  connect(resetButton, &QPushButton::clicked, stabilizerHeightFactorLineEdit, &LineEdit::resetToDefault);
+
   QLabel *frameSlopeFactorLabel = new QLabel(tr("Frame slope factor:"));
   LineEdit *frameSlopeFactorLineEdit = new LineEdit("render", "frameSlopeFactor", "1.5");
   connect(resetButton, &QPushButton::clicked, frameSlopeFactorLineEdit, &LineEdit::resetToDefault);
@@ -80,6 +91,11 @@ RenderPage::RenderPage(QWidget *parent) : QWidget(parent)
   QVBoxLayout *layout = new QVBoxLayout();
   layout->addWidget(resetButton);
   layout->addWidget(enableStabilizersCheckBox);
+  layout->addWidget(permanentStabilizersCheckBox);
+  layout->addWidget(stabilizerThresholdLabel);
+  layout->addWidget(stabilizerThresholdLineEdit);
+  layout->addWidget(stabilizerHeightFactorLabel);
+  layout->addWidget(stabilizerHeightFactorLineEdit);
   layout->addWidget(frameSlopeFactorLabel);
   layout->addWidget(frameSlopeFactorLineEdit);
   /*
