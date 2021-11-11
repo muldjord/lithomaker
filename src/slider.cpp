@@ -51,10 +51,10 @@ Slider::Slider(const QString &group, const QString &name,
   key = (group != "General"?group + "/":"") + name;
   
   if(!settings->contains(key)) {
-    settings->setValue(key, stdValue);
+    settings->setValue(key, QString::number((float)stdValue / exponent));
   }
-  lineEdit->setText(settings->value(key).toString());
   slider->setValue(settings->value(key).toFloat() * exponent);
+  lineEdit->setText(QString::number((float)slider->value() / exponent));
 
   QHBoxLayout *layout = new QHBoxLayout();
   layout->addWidget(lineEdit);
