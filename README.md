@@ -9,7 +9,7 @@ NOTE! The resulting lithophane is currently lying flat down when the STL is impo
 
 ## Release notes
 
-#### Version 0.6.0 (In progress, unreleased)
+#### Version 0.6.0 (11th Nov 2021)
 * Added validators for variable lineedits
 * Added tooltips for variable lineedits
 * Now checks for grayscale input image and suggests to convert if input image is in color
@@ -20,7 +20,7 @@ NOTE! The resulting lithophane is currently lying flat down when the STL is impo
 * Made it possible to make stabilizers permanent
 * Made more mesh variables / factors configurable
 
-#### Version 0.5.0 (Nov 7th 2021)
+#### Version 0.5.0 (7th Nov 2021)
 * First public release
 
 #### Version 0.0.1 (Unreleased)
