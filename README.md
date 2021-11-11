@@ -9,6 +9,9 @@ NOTE! The resulting lithophane is currently lying flat down when the STL is impo
 
 ## Release notes
 
+#### Version 0.6.1 (In progress, unreleased)
+* Corrected frame front side distance from backside
+
 #### Version 0.6.0 (11th Nov 2021)
 * Added validators for variable lineedits
 * Added tooltips for variable lineedits
