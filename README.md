@@ -1,6 +1,10 @@
 # LithoMaker
 Creates 3D lithophanes from PNG image files and exports them to STL files, ready for slicing and 3D printing.
 
+Download the latest release [here](https://github.com/muldjord/lithomaker/releases).
+
+Check a video with an example converted with LithoMaker, sliced with PrusaSlicer and printed on a Prusa i3 MK3S+ here: https://youtu.be/Jqr4oohogVs
+
 LithoMaker DOES NOT upload or process your image files using a cloud service like the online lithophane websites do. I basically made this tool because most Youtube lithophane 3D printing instructions included a step that required me to upload my images to a private company for processing. I am not a fan of that, so I scratched the itch and created LithoMaker.
 
 LithoMaker is a fairly simple piece of software. It reads the input PNG image, inverts it and creates a height-mapped 3D mesh from the grayscale values which is then scaled to the requested thickness. It then creates the remaining triangles needed for a 3D printable lithophane with a frame and some printing stabilizers. The mesh is then exported as an STL file, ready for importing into a 3D printer slicer.
