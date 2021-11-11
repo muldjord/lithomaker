@@ -211,7 +211,7 @@ void MainWindow::createMesh()
   }
   if(image.format() != QImage::Format_Grayscale8 &&
      QMessageBox::question(this, tr("Not grayscale"), tr("The image is reported to not be grayscale. Do you want LithoMaker to convert it to grayscale before processing it?")) == QMessageBox::Yes) {
-    image = image.convertToFormat(QImage::Format_Grayscale16);
+    image = image.convertToFormat(QImage::Format_Grayscale8);
   }
   image.invertPixels();
   border = borderLineEdit->text().toFloat();
