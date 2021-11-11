@@ -47,14 +47,7 @@ int main(int argc, char *argv[])
 
   QDir::setCurrent(QApplication::applicationDirPath());
 
-  QCommandLineParser parser;
-  parser.addHelpOption();
-  QCommandLineOption cOption("c", "Sets the config file to use", "FILENAME", "config.ini");
-  parser.addOption(cOption);
-
-  parser.process(app);
-
-  QSettings s(parser.value("c"));
+  QSettings s("LithoMaker");
   settings = &s;
 
   MainWindow window;
