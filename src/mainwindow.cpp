@@ -249,7 +249,7 @@ void MainWindow::createMesh()
         polygons.append(getVertex(x + 1, image.height() - 1, getPixel(image, x + 1, image.height() - 1) * depthFactor, true));
         polygons.append(getVertex(x + 1, image.height() - 1, minThickness, true));
         polygons.append(getVertex(x, image.height() - 1, minThickness, true));
-          }
+      }
       // The lithophane heightmap
       polygons.append(getVertex(x, y, getPixel(image, x, y) * depthFactor, true));
       polygons.append(getVertex(x + 1, y + 1, getPixel(image, x + 1, y + 1) * depthFactor, true));
@@ -733,13 +733,13 @@ QList<QVector3D> MainWindow::addFrame(const float &width, const float &height)
   frame.append(getVertex(0.000000, height, depth));
   frame.append(getVertex(width, height, depth));
 
-  frame.append(getVertex(width - border - frameSlope, border + frameSlope, 0.100000));
-  frame.append(getVertex(width - border - frameSlope, height - border - frameSlope, 0.100000));
-  frame.append(getVertex(border + frameSlope, height - border - frameSlope, 0.100000));
+  frame.append(getVertex(width - border - frameSlope, border + frameSlope, 0.000000));
+  frame.append(getVertex(width - border - frameSlope, height - border - frameSlope, 0.000000));
+  frame.append(getVertex(border + frameSlope, height - border - frameSlope, 0.000000));
 
-  frame.append(getVertex(width - border - frameSlope, border + frameSlope, 0.100000));
-  frame.append(getVertex(border + frameSlope, height - border - frameSlope, 0.100000));
-  frame.append(getVertex(border + frameSlope, border + frameSlope, 0.100000));
+  frame.append(getVertex(width - border - frameSlope, border + frameSlope, 0.000000));
+  frame.append(getVertex(border + frameSlope, height - border - frameSlope, 0.000000));
+  frame.append(getVertex(border + frameSlope, border + frameSlope, 0.000000));
 
   frame.append(getVertex(0.000000, 0.000000, depth));
   frame.append(getVertex(0.000000, height, depth));
@@ -805,35 +805,35 @@ QList<QVector3D> MainWindow::addFrame(const float &width, const float &height)
   frame.append(getVertex(0.000000, 0.000000, depth));
   frame.append(getVertex(width, 0.000000, depth));
 
-  frame.append(getVertex(border + frameSlope, border + frameSlope, 0.100000));
-  frame.append(getVertex(border + frameSlope, height - border - frameSlope, 0.100000));
+  frame.append(getVertex(border + frameSlope, border + frameSlope, 0.000000));
+  frame.append(getVertex(border + frameSlope, height - border - frameSlope, 0.000000));
   frame.append(getVertex(border, height - border, depth));
 
-  frame.append(getVertex(border + frameSlope, border + frameSlope, 0.100000));
+  frame.append(getVertex(border + frameSlope, border + frameSlope, 0.000000));
   frame.append(getVertex(border, height - border, depth));
   frame.append(getVertex(border, border, depth));
 
-  frame.append(getVertex(width - border - frameSlope, height - border - frameSlope, 0.100000));
-  frame.append(getVertex(width - border - frameSlope, border + frameSlope, 0.100000));
+  frame.append(getVertex(width - border - frameSlope, height - border - frameSlope, 0.000000));
+  frame.append(getVertex(width - border - frameSlope, border + frameSlope, 0.000000));
   frame.append(getVertex(width - border, border, depth));
 
-  frame.append(getVertex(width - border - frameSlope, height - border - frameSlope, 0.100000));
+  frame.append(getVertex(width - border - frameSlope, height - border - frameSlope, 0.000000));
   frame.append(getVertex(width - border, border, depth));
   frame.append(getVertex(width - border, height - border, depth));
 
-  frame.append(getVertex(border + frameSlope, height - border - frameSlope, 0.100000));
-  frame.append(getVertex(width - border - frameSlope, height - border - frameSlope, 0.100000));
+  frame.append(getVertex(border + frameSlope, height - border - frameSlope, 0.000000));
+  frame.append(getVertex(width - border - frameSlope, height - border - frameSlope, 0.000000));
   frame.append(getVertex(width - border, height - border, depth));
 
-  frame.append(getVertex(border + frameSlope, height - border - frameSlope, 0.100000));
+  frame.append(getVertex(border + frameSlope, height - border - frameSlope, 0.000000));
   frame.append(getVertex(width - border, height - border, depth));
   frame.append(getVertex(border, height - border, depth));
 
-  frame.append(getVertex(width - border - frameSlope, border + frameSlope, 0.100000));
-  frame.append(getVertex(border + frameSlope, border + frameSlope, 0.100000));
+  frame.append(getVertex(width - border - frameSlope, border + frameSlope, 0.000000));
+  frame.append(getVertex(border + frameSlope, border + frameSlope, 0.000000));
   frame.append(getVertex(border, border, depth));
 
-  frame.append(getVertex(width - border - frameSlope, border + frameSlope, 0.100000));
+  frame.append(getVertex(width - border - frameSlope, border + frameSlope, 0.000000));
   frame.append(getVertex(border, border, depth));
   frame.append(getVertex(width - border, border, depth));
 
