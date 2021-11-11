@@ -9,8 +9,9 @@ NOTE! The resulting lithophane is currently lying flat down when the STL is impo
 
 ## Release notes
 
-#### Version 0.6.1 (In progress, unreleased)
+#### Version 0.6.1 (11th Nov 2021)
 * Corrected frame front side distance from backside
+* Fixed config key to 'LithoMaker'
 
 #### Version 0.6.0 (11th Nov 2021)
 * Added validators for variable lineedits
