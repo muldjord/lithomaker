@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 
   parser.process(app);
 
-  QSettings s(parser.value("c"), QSettings::IniFormat);
+  QSettings s(parser.value("c"));
   settings = &s;
 
   MainWindow window;
