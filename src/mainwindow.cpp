@@ -32,6 +32,7 @@
 #include "mainwindow.h"
 #include "aboutbox.h"
 #include "configdialog.h"
+#include "slider.h"
 
 extern QSettings *settings;
 
@@ -50,29 +51,17 @@ MainWindow::MainWindow()
   createActions();
   createMenus();
 
-  QDoubleValidator *thicknessValidator = new QDoubleValidator(0.8, 10.0, 1);
-  QDoubleValidator *borderValidator = new QDoubleValidator(2.0, 50.0, 1);
-  QDoubleValidator *widthValidator = new QDoubleValidator(20.0, 400.0, 1);
-
   QLabel *minThicknessLabel = new QLabel(tr("Minimum thickness (mm):"));
-  minThicknessLineEdit = new QLineEdit(settings->value("main/minThickness", "0.8").toString());
-  minThicknessLineEdit->setToolTip(tr("Allowed range: 0.8 to 10.0, 1 decimal"));
-  minThicknessLineEdit->setValidator(thicknessValidator);
+  minThicknessSlider = new Slider("main", "minThickness", 8, 100, 8, 10);
   
   QLabel *totalThicknessLabel = new QLabel(tr("Total thickness (mm):"));
-  totalThicknessLineEdit = new QLineEdit(settings->value("main/totalThickness", "3.0").toString());
-  totalThicknessLineEdit->setToolTip(tr("Allowed range: 0.8 to 10.0, 1 decimal"));
-  totalThicknessLineEdit->setValidator(thicknessValidator);
+  totalThicknessSlider = new Slider("main", "totalThickness", 20, 100, 30, 10);
 
   QLabel *borderLabel = new QLabel(tr("Frame border (mm):"));
-  borderLineEdit = new QLineEdit(settings->value("main/frameBorder", "3.0").toString());
-  borderLineEdit->setToolTip(tr("Allowed range: 2.0 to 50.0, 1 decimal"));
-  borderLineEdit->setValidator(borderValidator);
+  borderSlider = new Slider("main", "frameBorder", 20, 500, 30, 10);
 
   QLabel *widthLabel = new QLabel(tr("Width, including frame borders (mm):"));
-  widthLineEdit = new QLineEdit(settings->value("main/width", "200.0").toString());
-  widthLineEdit->setToolTip(tr("Allowed range: 20.0 to 400.0, 1 decimal"));
-  widthLineEdit->setValidator(widthValidator);
+  widthSlider = new Slider("main", "width", 200, 4000, 2000, 10);
 
   QLabel *inputLabel = new QLabel(tr("Input image filename:"));
   inputLineEdit = new QLineEdit(settings->value("main/inputFilePath", "example.png").toString());
@@ -97,13 +86,13 @@ MainWindow::MainWindow()
   
   QVBoxLayout *layout = new QVBoxLayout();
   layout->addWidget(minThicknessLabel);
-  layout->addWidget(minThicknessLineEdit);
+  layout->addWidget(minThicknessSlider);
   layout->addWidget(totalThicknessLabel);
-  layout->addWidget(totalThicknessLineEdit);
+  layout->addWidget(totalThicknessSlider);
   layout->addWidget(borderLabel);
-  layout->addWidget(borderLineEdit);
+  layout->addWidget(borderSlider);
   layout->addWidget(widthLabel);
-  layout->addWidget(widthLineEdit);
+  layout->addWidget(widthSlider);
   layout->addWidget(inputLabel);
   layout->addLayout(inputLayout);
   layout->addWidget(outputLabel);
@@ -121,10 +110,6 @@ MainWindow::MainWindow()
 MainWindow::~MainWindow()
 {
   settings->setValue("main/windowState", saveGeometry());
-  settings->setValue("main/minThickness", minThicknessLineEdit->text());
-  settings->setValue("main/totalThickness", totalThicknessLineEdit->text());
-  settings->setValue("main/frameBorder", borderLineEdit->text());
-  settings->setValue("main/width", widthLineEdit->text());
   settings->setValue("main/inputFilePath", inputLineEdit->text());
   settings->setValue("main/outputFilePath", outputLineEdit->text());
 }
@@ -183,15 +168,8 @@ void MainWindow::createMesh()
     QMessageBox::warning(this, tr("File not found"), tr("Input file doesn't exist. Please check filename and permissions."));
     return;
   }
-  if(!minThicknessLineEdit->hasAcceptableInput() ||
-     !totalThicknessLineEdit->hasAcceptableInput() ||
-     !borderLineEdit->hasAcceptableInput() ||
-     !widthLineEdit->hasAcceptableInput()) {
-    QMessageBox::critical(this, tr("Invalid format"), tr("One or more of the variables are invalid. Hold the mouse pointer over the input fields to see valid ranges and formats."));
-    return;
-  }
 
-  if(borderLineEdit->text().toFloat() * 2 > widthLineEdit->text().toFloat()) {
+  if(settings->value("main/frameBorder").toFloat() * 2 > settings->value("main/width").toFloat()) {
     QMessageBox::warning(this, tr("Border too thick"), tr("The chosen frame border size exceeds the size of the total lithophane width. Please correct this."));
     return;
   }
@@ -214,10 +192,10 @@ void MainWindow::createMesh()
     image = image.convertToFormat(QImage::Format_Grayscale8);
   }
   image.invertPixels();
-  border = borderLineEdit->text().toFloat();
-  depthFactor = (totalThicknessLineEdit->text().toFloat() - minThicknessLineEdit->text().toFloat()) / 255.0;
-  widthFactor = (widthLineEdit->text().toFloat() - (border * 2)) / image.width();
-  float minThickness = minThicknessLineEdit->text().toFloat() * -1;
+  border = settings->value("main/frameBorder").toFloat();
+  depthFactor = (settings->value("main/totalThickness").toFloat() - settings->value("main/minThickness").toFloat()) / 255.0;
+  widthFactor = (settings->value("main/width").toFloat() - (border * 2)) / image.width();
+  float minThickness = settings->value("main/minThickness").toFloat() * -1;
   renderProgress->setMaximum(image.height() - 1);
   renderProgress->setValue(0);
   renderProgress->setFormat(tr("Rendering %p%"));
@@ -287,11 +265,11 @@ void MainWindow::createMesh()
   if(settings->value("render/enableStabilizers", true).toBool() &&
      totalHeight > settings->value("render/stabilizerThreshold", 60.0).toDouble()) {
     polygons.append(addStabilizer(0, ((border * 2) + (image.height() * widthFactor)) * stabilizerHeightFactor));
-    polygons.append(addStabilizer(widthLineEdit->text().toFloat() - (border < 4?border:4), totalHeight * stabilizerHeightFactor));
+    polygons.append(addStabilizer(settings->value("main/width").toFloat() - (border < 4?border:4), totalHeight * stabilizerHeightFactor));
   }
 
   // Frame
-  polygons.append(addFrame(widthLineEdit->text().toFloat(), (border * 2) + (image.height() * widthFactor)));
+  polygons.append(addFrame(settings->value("main/width").toFloat(), (border * 2) + (image.height() * widthFactor)));
   
   //polygons.append("endsolid\n");
   printf("Rendering finished...\n");
@@ -392,7 +370,7 @@ QList<QVector3D> MainWindow::addStabilizer(const float &x, const float &height)
   double zDelta = (settings->value("render/permanentStabilizers", false).toBool()?1.0:0.0);
   
   // Front
-  z = totalThicknessLineEdit->text().toFloat() - minThicknessLineEdit->text().toFloat();
+  z = settings->value("main/totalThickness").toFloat() - settings->value("main/minThickness").toFloat();
   stabilizer.append(getVertex(x, 0.000000, z + 1 - zDelta));
   stabilizer.append(getVertex(x, 0.000000, z + depth));
   stabilizer.append(getVertex(x, height, z + 3));
@@ -554,7 +532,7 @@ QList<QVector3D> MainWindow::addStabilizer(const float &x, const float &height)
   stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + 1 - zDelta));
 
   // Back
-  z = (minThicknessLineEdit->text().toFloat() * -1);
+  z = (settings->value("main/minThickness").toFloat() * -1);
   stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z - 1 + zDelta));
   stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z - depth));
   stabilizer.append(getVertex(x + (border < 4?border:4), height, z - 3));
@@ -720,8 +698,8 @@ QList<QVector3D> MainWindow::addStabilizer(const float &x, const float &height)
 
 QList<QVector3D> MainWindow::addFrame(const float &width, const float &height)
 {
-  float minThickness = minThicknessLineEdit->text().toFloat();
-  float depth = totalThicknessLineEdit->text().toFloat() - minThickness;
+  float minThickness = settings->value("main/minThickness").toFloat();
+  float depth = settings->value("main/totalThickness").toFloat() - minThickness;
   float frameSlope = depth / settings->value("render/frameSlopeFactor", "1.5").toFloat();
 
   QList<QVector3D> frame;

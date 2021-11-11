@@ -35,6 +35,8 @@
 #include <QProgressBar>
 #include <QPushButton>
 
+#include "slider.h"
+
 class MainWindow : public QMainWindow
 {
   Q_OBJECT
@@ -65,10 +67,14 @@ private:
   void createMenus();
   //QByteArray stlString;
   QList<QVector3D> polygons;
-  QLineEdit *minThicknessLineEdit;
-  QLineEdit *totalThicknessLineEdit;
-  QLineEdit *borderLineEdit;
-  QLineEdit *widthLineEdit;
+  Slider *minThicknessSlider;
+  //QLineEdit *minThicknessLineEdit;
+  Slider *totalThicknessSlider;
+  //QLineEdit *totalThicknessLineEdit;
+  Slider *borderSlider;
+  //QLineEdit *borderLineEdit;
+  Slider *widthSlider;
+  //QLineEdit *widthLineEdit;
   QPushButton *inputButton;
   QLineEdit *inputLineEdit;
   QPushButton *outputButton;

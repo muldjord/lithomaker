@@ -16,6 +16,7 @@ DEFINES+=VERSION=\\\"$$VERSION\\\"
 # Input
 HEADERS += src/mainwindow.h \
            src/lineedit.h \
+           src/slider.h \
            src/combobox.h \
            src/checkbox.h \
            src/configpages.h \
@@ -25,6 +26,7 @@ HEADERS += src/mainwindow.h \
 SOURCES += src/main.cpp \
            src/mainwindow.cpp \
            src/lineedit.cpp \
+           src/slider.cpp \
            src/combobox.cpp \
            src/checkbox.cpp \
            src/configpages.cpp \
