@@ -55,7 +55,7 @@ MainWindow::MainWindow()
   minThicknessSlider = new Slider("main", "minThickness", 8, 100, 8, 10);
   
   QLabel *totalThicknessLabel = new QLabel(tr("Total thickness (mm):"));
-  totalThicknessSlider = new Slider("main", "totalThickness", 20, 100, 30, 10);
+  totalThicknessSlider = new Slider("main", "totalThickness", 20, 150, 30, 10);
 
   QLabel *borderLabel = new QLabel(tr("Frame border (mm):"));
   borderSlider = new Slider("main", "frameBorder", 20, 500, 30, 10);
@@ -97,14 +97,13 @@ MainWindow::MainWindow()
   layout->addLayout(inputLayout);
   layout->addWidget(outputLabel);
   layout->addLayout(outputLayout);
-  layout->addWidget(renderProgress);
   layout->addWidget(renderButton);
+  layout->addWidget(renderProgress);
 
   setCentralWidget(new QWidget());
   centralWidget()->setLayout(layout);
 
   show();
-
 }
 
 MainWindow::~MainWindow()
