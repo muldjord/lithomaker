@@ -37,55 +37,9 @@
 
 QSettings *settings;
 
-void customMessageHandler(QtMsgType type, const QMessageLogContext &, const QString &msg)
-{
-  // Only add to debug file for certain severities
-  bool addToFile = false;
-
-  // Add timestamp to debug message
-  QString txt = QDateTime::currentDateTime().toString("dd MMM yyyy hh:mm:ss");
-  // Decide which type of debug message it is, and add string to signify it
-  // Then append the debug message itself to the same string.
-  switch (type) {
-  case QtDebugMsg:
-    txt += QString(": Debug: %1").arg(msg);
-    break;
-  case QtInfoMsg:
-    txt += QString(": Info: %1").arg(msg);
-    break;
-  case QtWarningMsg:
-    addToFile = true;
-    txt += QString(": Warning: %1").arg(msg);
-    break;
-  case QtCriticalMsg:
-    addToFile = true;
-    txt += QString(": Critical: %1").arg(msg);
-    break;
-  case QtFatalMsg:
-    addToFile = true;
-    txt += QString(": Fatal: %1").arg(msg);
-    abort();
-  }
-  printf("%s", txt.toStdString().c_str());
-  
-  if(addToFile) {
-    QFile outFile(QApplication::applicationDirPath() + "/debug.log");
-    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
-    QTextStream ts(&outFile);
-    if (txt.right(1) == "\n")
-      ts << txt;
-    else
-      ts << txt << Qt::endl;
-    outFile.close();
-  }
-}
-
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
-
-  // Install the custom debug message handler used by qDebug()
-  qInstallMessageHandler(customMessageHandler);
 
   QTranslator translator;
   translator.load("lithomaker_" + QLocale::system().name());
