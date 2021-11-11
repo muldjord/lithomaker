@@ -26,12 +26,9 @@
 
 #include <QApplication>
 #include <QDir>
-#include <QDateTime>
 #include <QTranslator>
 #include <QSettings>
-#include <QTextStream>
-#include <QCommandLineParser>
-#include <QCommandLineOption>
+#include <QStyleFactory>
 
 #include "mainwindow.h"
 
@@ -40,7 +37,8 @@ QSettings *settings;
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
-
+  app.setStyle(QStyleFactory::create("Fusion"));
+  
   QTranslator translator;
   translator.load("lithomaker_" + QLocale::system().name());
   app.installTranslator(&translator);
