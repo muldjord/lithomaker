@@ -40,7 +40,6 @@ Slider::Slider(const QString &group, const QString &name,
 {
   lineEdit = new QLineEdit();
   lineEdit->setMaximumWidth(50);
-  lineEdit->setReadOnly(true);
   slider = new QSlider(Qt::Horizontal);
   slider->setMinimum(minValue);
   slider->setMaximum(maxValue);
@@ -63,6 +62,7 @@ Slider::Slider(const QString &group, const QString &name,
   setLayout(layout);
   
   connect(slider, &QSlider::valueChanged, this, &Slider::saveToConfig);
+  connect(lineEdit, &QLineEdit::editingFinished, this, &Slider::setSlider);
 }
 
 Slider::~Slider()
@@ -80,4 +80,9 @@ void Slider::saveToConfig()
 
   settings->setValue(key, lineEdit->text());
   qDebug("Key '%s' saved to config with value '%s'\n", key.toStdString().c_str(), lineEdit->text().toStdString().c_str());
+}
+
+void Slider::setSlider()
+{
+  slider->setValue(lineEdit->text().toFloat() * exponent);
 }

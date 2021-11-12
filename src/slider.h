@@ -47,6 +47,7 @@ protected:
   
 private slots:
   void saveToConfig();
+  void setSlider();
 
 private:
   QSlider *slider;
