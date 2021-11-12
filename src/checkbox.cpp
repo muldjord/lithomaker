@@ -33,22 +33,19 @@
 
 extern QSettings *settings;
 
-CheckBox::CheckBox(QString title, QString group, QString name, bool stdValue) : QCheckBox(title)
+CheckBox::CheckBox(const QString &group, const QString &name,
+                   const QString &title,
+                   const bool &stdValue)
+  : QCheckBox(title), stdValue(stdValue)
 {
-  this->group = group;
-  this->name = name;
-  this->defaultValue = stdValue;
+  key = (group != "General"?group + "/":"") + name;
   
-  if(group != "General")
-    settings->beginGroup(group);
-  if(!settings->contains(name)) {
-    settings->setValue(name, (stdValue?"true":"false"));
+  if(!settings->contains(key)) {
+    settings->setValue(key, (stdValue?"true":"false"));
   }
-  setChecked(settings->value(name, stdValue).toBool());
-  if(group != "General")
-    settings->endGroup();
+  setChecked(settings->value(key, stdValue).toBool());
   
-  connect(this, SIGNAL(stateChanged(int)), this, SLOT(saveToConfig()));
+  connect(this, &QCheckBox::stateChanged, this, &CheckBox::saveToConfig);
 }
 
 CheckBox::~CheckBox()
@@ -63,19 +60,16 @@ void CheckBox::refreshState()
 
 void CheckBox::resetToDefault()
 {
-  setChecked(defaultValue);
+  setChecked(stdValue);
 }
 
-void CheckBox::saveToConfig()
+void CheckBox::saveToConfig(int)
 {
-  if(group != "General")
-    settings->beginGroup(group);
   if(isChecked()) {
-    settings->setValue(name, "true");
+    settings->setValue(key, "true");
   } else {
-    settings->setValue(name, "false");
+    settings->setValue(key, "false");
   }
-  if(group != "General")
-    settings->endGroup();
-  qDebug("Key '%s' saved to config with value '%s'\n", name.toStdString().c_str(), (isChecked()?"true":"false"));
+
+  qDebug("Key '%s' saved to config with value '%s'\n", key.toStdString().c_str(), (isChecked()?"true":"false"));
 }

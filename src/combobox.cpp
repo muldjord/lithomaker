@@ -33,29 +33,25 @@
 
 extern QSettings *settings;
 
-ComboBox::ComboBox(QString group, QString name, QString stdValue)
+ComboBox::ComboBox(const QString &group, const QString &name,
+                   const QString &stdValue)
+  : stdValue(stdValue)
 {
-  this->group = group;
-  this->name = name;
-  this->defaultValue = stdValue;
+  key = (group != "General"?group + "/":"") + name;
   
-  if(group != "General")
-    settings->beginGroup(group);
-  if(!settings->contains(name)) {
-    settings->setValue(name, stdValue);
+  if(!settings->contains(key)) {
+    settings->setValue(key, stdValue);
   }
-  configValue = settings->value(name, "1").toString();
-  if(group != "General")
-    settings->endGroup();
+  configValue = settings->value(key, "1").toString();
   
-  connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(saveToConfig()));
+  connect(this, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ComboBox::saveToConfig);
 }
 
 ComboBox::~ComboBox()
 {
 }
 
-void ComboBox::addConfigItem(QString text, QString value)
+void ComboBox::addConfigItem(const QString &text, const QString &value)
 {
   addItem(text, value);
 }
@@ -72,18 +68,15 @@ void ComboBox::setFromConfig()
 void ComboBox::resetToDefault()
 {
   for(int i = 0; i < count(); ++i) {
-    if(itemData(i).toString() == defaultValue) {
+    if(itemData(i).toString() == stdValue) {
       setCurrentIndex(i);
     }
   }
 }
 
-void ComboBox::saveToConfig()
+void ComboBox::saveToConfig(int)
 {
-  if(group != "General")
-    settings->beginGroup(group);
-  settings->setValue(name, currentData().toString());
-  if(group != "General")
-    settings->endGroup();
-  qDebug("Key '%s' saved to config with value '%s'\n", name.toStdString().c_str(), currentData().toString().toStdString().c_str());
+  settings->setValue(key, currentData().toString());
+
+  qDebug("Key '%s' saved to config with value '%s'\n", key.toStdString().c_str(), currentData().toString().toStdString().c_str());
 }

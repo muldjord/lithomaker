@@ -52,16 +52,16 @@ MainWindow::MainWindow()
   createMenus();
 
   QLabel *minThicknessLabel = new QLabel(tr("Minimum thickness (mm):"));
-  minThicknessSlider = new Slider("main", "minThickness", 8, 100, 8, 10);
+  minThicknessSlider = new Slider("render", "minThickness", 8, 100, 8, 10);
   
   QLabel *totalThicknessLabel = new QLabel(tr("Total thickness (mm):"));
-  totalThicknessSlider = new Slider("main", "totalThickness", 20, 150, 30, 10);
+  totalThicknessSlider = new Slider("render", "totalThickness", 20, 150, 30, 10);
 
   QLabel *borderLabel = new QLabel(tr("Frame border (mm):"));
-  borderSlider = new Slider("main", "frameBorder", 20, 500, 30, 10);
+  borderSlider = new Slider("render", "frameBorder", 20, 500, 30, 10);
 
   QLabel *widthLabel = new QLabel(tr("Width, including frame borders (mm):"));
-  widthSlider = new Slider("main", "width", 200, 4000, 2000, 10);
+  widthSlider = new Slider("render", "width", 200, 4000, 2000, 10);
 
   QLabel *inputLabel = new QLabel(tr("Input image filename:"));
   inputLineEdit = new QLineEdit(settings->value("main/inputFilePath", "example.png").toString());
@@ -168,7 +168,7 @@ void MainWindow::createMesh()
     return;
   }
 
-  if(settings->value("main/frameBorder").toFloat() * 2 > settings->value("main/width").toFloat()) {
+  if(settings->value("render/frameBorder").toFloat() * 2 > settings->value("render/width").toFloat()) {
     QMessageBox::warning(this, tr("Border too thick"), tr("The chosen frame border size exceeds the size of the total lithophane width. Please correct this."));
     return;
   }
@@ -191,10 +191,10 @@ void MainWindow::createMesh()
     image = image.convertToFormat(QImage::Format_Grayscale8);
   }
   image.invertPixels();
-  border = settings->value("main/frameBorder").toFloat();
-  depthFactor = (settings->value("main/totalThickness").toFloat() - settings->value("main/minThickness").toFloat()) / 255.0;
-  widthFactor = (settings->value("main/width").toFloat() - (border * 2)) / image.width();
-  float minThickness = settings->value("main/minThickness").toFloat() * -1;
+  border = settings->value("render/frameBorder").toFloat();
+  depthFactor = (settings->value("render/totalThickness").toFloat() - settings->value("render/minThickness").toFloat()) / 255.0;
+  widthFactor = (settings->value("render/width").toFloat() - (border * 2)) / image.width();
+  float minThickness = settings->value("render/minThickness").toFloat() * -1;
   renderProgress->setMaximum(image.height() - 1);
   renderProgress->setValue(0);
   renderProgress->setFormat(tr("Rendering %p%"));
@@ -264,11 +264,11 @@ void MainWindow::createMesh()
   if(settings->value("render/enableStabilizers", true).toBool() &&
      totalHeight > settings->value("render/stabilizerThreshold", 60.0).toDouble()) {
     polygons.append(addStabilizer(0, ((border * 2) + (image.height() * widthFactor)) * stabilizerHeightFactor));
-    polygons.append(addStabilizer(settings->value("main/width").toFloat() - (border < 4?border:4), totalHeight * stabilizerHeightFactor));
+    polygons.append(addStabilizer(settings->value("render/width").toFloat() - (border < 4?border:4), totalHeight * stabilizerHeightFactor));
   }
 
   // Frame
-  polygons.append(addFrame(settings->value("main/width").toFloat(), (border * 2) + (image.height() * widthFactor)));
+  polygons.append(addFrame(settings->value("render/width").toFloat(), (border * 2) + (image.height() * widthFactor)));
   
   //polygons.append("endsolid\n");
   printf("Rendering finished...\n");
@@ -369,7 +369,7 @@ QList<QVector3D> MainWindow::addStabilizer(const float &x, const float &height)
   double zDelta = (settings->value("render/permanentStabilizers", false).toBool()?1.0:0.0);
   
   // Front
-  z = settings->value("main/totalThickness").toFloat() - settings->value("main/minThickness").toFloat();
+  z = settings->value("render/totalThickness").toFloat() - settings->value("render/minThickness").toFloat();
   stabilizer.append(getVertex(x, 0.000000, z + 1 - zDelta));
   stabilizer.append(getVertex(x, 0.000000, z + depth));
   stabilizer.append(getVertex(x, height, z + 3));
@@ -531,7 +531,7 @@ QList<QVector3D> MainWindow::addStabilizer(const float &x, const float &height)
   stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z + 1 - zDelta));
 
   // Back
-  z = (settings->value("main/minThickness").toFloat() * -1);
+  z = (settings->value("render/minThickness").toFloat() * -1);
   stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z - 1 + zDelta));
   stabilizer.append(getVertex(x + (border < 4?border:4), 0.000000, z - depth));
   stabilizer.append(getVertex(x + (border < 4?border:4), height, z - 3));
@@ -697,8 +697,8 @@ QList<QVector3D> MainWindow::addStabilizer(const float &x, const float &height)
 
 QList<QVector3D> MainWindow::addFrame(const float &width, const float &height)
 {
-  float minThickness = settings->value("main/minThickness").toFloat();
-  float depth = settings->value("main/totalThickness").toFloat() - minThickness;
+  float minThickness = settings->value("render/minThickness").toFloat();
+  float depth = settings->value("render/totalThickness").toFloat() - minThickness;
   float frameSlope = depth / settings->value("render/frameSlopeFactor", "1.5").toFloat();
 
   QList<QVector3D> frame;
@@ -822,11 +822,6 @@ int MainWindow::getPixel(const QImage &image, const int &x, const int &y)
   return image.pixelColor(x, image.height() - 1 - y).red();
 }
 
-QByteArray MainWindow::beginTriangle()
-{
-  return QByteArray("\tfacet normal 0.0 0.0 0.0\n\t\touter loop\n");
-}
-
 QVector3D MainWindow::getVertex(float x, float y, float z, const bool &scale)
 {
   float add = 0.0;
@@ -837,11 +832,6 @@ QVector3D MainWindow::getVertex(float x, float y, float z, const bool &scale)
     add = border;
   }
   return QVector3D(x + add, y + add, z);
-}
-
-QByteArray MainWindow::endTriangle()
-{
-  return QByteArray("\t\tendloop\n\tendfacet\n");
 }
 
 void MainWindow::inputSelect()

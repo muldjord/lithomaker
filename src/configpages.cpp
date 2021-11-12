@@ -53,10 +53,10 @@ RenderPage::RenderPage(QWidget *parent) : QWidget(parent)
 {
   QPushButton *resetButton = new QPushButton(tr("Reset all to defaults"));
 
-  CheckBox *enableStabilizersCheckBox = new CheckBox(tr("Enable stabilizers"), "render", "enableStabilizers", true);
+  CheckBox *enableStabilizersCheckBox = new CheckBox("render", "enableStabilizers", tr("Enable stabilizers"), true);
   connect(resetButton, &QPushButton::clicked, enableStabilizersCheckBox, &CheckBox::resetToDefault);
 
-  CheckBox *permanentStabilizersCheckBox = new CheckBox(tr("Make stabilizers permanent"), "render", "permanentStabilizers", false);
+  CheckBox *permanentStabilizersCheckBox = new CheckBox("render", "permanentStabilizers", tr("Make stabilizers permanent"), false);
   connect(resetButton, &QPushButton::clicked, permanentStabilizersCheckBox, &CheckBox::resetToDefault);
 
   QLabel *stabilizerThresholdLabel = new QLabel(tr("Minimum height before adding stabilizers:"));
@@ -120,7 +120,7 @@ ExportPage::ExportPage(QWidget *parent) : QWidget(parent)
   stlFormatComboBox->setFromConfig();
   connect(resetButton, &QPushButton::clicked, stlFormatComboBox, &ComboBox::resetToDefault);
 
-  CheckBox *alwaysOverwriteCheckBox = new CheckBox(tr("Always overwrite existing file"), "export", "alwaysOverwrite", false);
+  CheckBox *alwaysOverwriteCheckBox = new CheckBox("export", "alwaysOverwrite", tr("Always overwrite existing file"), false);
   connect(resetButton, &QPushButton::clicked, alwaysOverwriteCheckBox, &CheckBox::resetToDefault);
   /*
   QLabel *delimiterLabel = new QLabel(tr("Delimiter:"));

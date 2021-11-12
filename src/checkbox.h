@@ -34,7 +34,9 @@ class CheckBox : public QCheckBox
   Q_OBJECT
     
 public:
-  CheckBox(QString title, QString group, QString name, bool stdValue);
+  CheckBox(const QString &title, const QString &group,
+           const QString &name,
+           const bool &stdValue);
   ~CheckBox();
   void refreshState();
 
@@ -42,12 +44,11 @@ public slots:
   void resetToDefault();
 
 private slots:
-  void saveToConfig();
+  void saveToConfig(int);
 
 private:
-  QString name;
-  QString group;
-  bool defaultValue;
+  QString key;
+  bool stdValue;
 };
 
 #endif // __CHECKBOX_H__

@@ -33,24 +33,18 @@
 
 extern QSettings *settings;
 
-LineEdit::LineEdit(QString group, QString name, QString stdValue, const bool &text) : isText(text)
+LineEdit::LineEdit(const QString &group, const QString &name, const QString &stdValue,
+                   const bool &isText)
+  : stdValue(stdValue), isText(isText)
 {
-  this->group = group;
-  this->name = name;
-  this->defaultValue = stdValue;
-  
-  if(group != "General")
-    settings->beginGroup(group);
-  if(!settings->contains(name)) {
-    settings->setValue(name, stdValue);
+  key = (group != "General"?group + "/":"") + name;
+
+  if(!settings->contains(key)) {
+    settings->setValue(key, stdValue);
   }
-  setText(settings->value(name, stdValue).toString());
-  if(group != "General")
-    settings->endGroup();
+  setText(settings->value(key, stdValue).toString());
 
-  connect(this, SIGNAL(editingFinished()), this, SLOT(saveToConfig()));
-  connect(this, SIGNAL(textChanged(QString)), this, SLOT(saveToConfig()));
-
+  connect(this, &QLineEdit::textChanged, this, &LineEdit::saveToConfig);
 }
 
 LineEdit::~LineEdit()
@@ -59,19 +53,15 @@ LineEdit::~LineEdit()
 
 void LineEdit::resetToDefault()
 {
-  setText(defaultValue);
+  setText(stdValue);
 }
 
-void LineEdit::saveToConfig()
+void LineEdit::saveToConfig(const QString &)
 {
   if(!isText && text().contains(",")) {
     setText(text().replace(",", "."));
   }
 
-  if(group != "General")
-    settings->beginGroup(group);
-  settings->setValue(name, this->text());
-  if(group != "General")
-    settings->endGroup();
-  qDebug("Key '%s' saved to config with value '%s'\n", name.toStdString().c_str(), this->text().toStdString().c_str());
+  settings->setValue(key, text());
+  qDebug("Key '%s' saved to config with value '%s'\n", key.toStdString().c_str(), text().toStdString().c_str());
 }

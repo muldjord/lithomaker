@@ -93,9 +93,7 @@ private:
   float widthFactor = -1.0;
   float border = -1.0;
   
-  QByteArray beginTriangle();
   QVector3D getVertex(float x, float y, float z, const bool &scale = false);
-  QByteArray endTriangle();
   
   QList<QVector3D> addStabilizer(const float &x, const float &height);
   QList<QVector3D> addFrame(const float &width, const float &height);

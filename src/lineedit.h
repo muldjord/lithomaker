@@ -34,7 +34,8 @@ class LineEdit : public QLineEdit
   Q_OBJECT
     
 public:
-  LineEdit(QString group, QString name, QString stdValue, const bool &text = false);
+  LineEdit(const QString &group, const QString &name, const QString &stdValue,
+           const bool &isText = false);
   ~LineEdit();
   
 public slots:
@@ -43,13 +44,12 @@ public slots:
 protected:
   
 private slots:
-  void saveToConfig();
+  void saveToConfig(const QString &);
 
 private:
+  QString key;
+  QString stdValue;
   bool isText;
-  QString name;
-  QString group;
-  QString defaultValue;
 };
 
 #endif // __LINEEDIT_H__

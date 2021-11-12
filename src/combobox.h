@@ -34,21 +34,21 @@ class ComboBox : public QComboBox
   Q_OBJECT
     
 public:
-  ComboBox(QString group, QString name, QString stdValue);
+  ComboBox(const QString &group, const QString &name,
+           const QString &stdValue);
   ~ComboBox();
-  void addConfigItem(QString text, QString value);
+  void addConfigItem(const QString &text, const QString &value);
   void setFromConfig();
 
 public slots:
   void resetToDefault();
 
 private slots:
-  void saveToConfig();
+  void saveToConfig(int);
 
 private:
-  QString name;
-  QString group;
-  QString defaultValue;
+  QString key;
+  QString stdValue;
   QString configValue;
 };
 
