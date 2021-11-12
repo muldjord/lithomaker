@@ -60,7 +60,7 @@ Slider::Slider(const QString &group, const QString &name,
   layout->addWidget(slider);
 
   setLayout(layout);
-  
+
   connect(slider, &QSlider::valueChanged, this, &Slider::saveToConfig);
   connect(lineEdit, &QLineEdit::editingFinished, this, &Slider::setSlider);
 }
