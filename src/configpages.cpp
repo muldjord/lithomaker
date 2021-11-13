@@ -54,7 +54,7 @@ RenderPage::RenderPage(QWidget *parent) : QWidget(parent)
   CheckBox *permanentStabilizersCheckBox = new CheckBox("render", "permanentStabilizers", tr("Make stabilizers permanent"), false);
   connect(resetButton, &QPushButton::clicked, permanentStabilizersCheckBox, &CheckBox::resetToDefault);
 
-  QLabel *stabilizerThresholdLabel = new QLabel(tr("Minimum height before adding stabilizers:"));
+  QLabel *stabilizerThresholdLabel = new QLabel(tr("Minimum height before adding stabilizers (mm):"));
   LineEdit *stabilizerThresholdLineEdit = new LineEdit("render", "stabilizerThreshold", "60.0");
   connect(resetButton, &QPushButton::clicked, stabilizerThresholdLineEdit, &LineEdit::resetToDefault);
 
@@ -63,7 +63,7 @@ RenderPage::RenderPage(QWidget *parent) : QWidget(parent)
   connect(resetButton, &QPushButton::clicked, stabilizerHeightFactorLineEdit, &LineEdit::resetToDefault);
 
   QLabel *frameSlopeFactorLabel = new QLabel(tr("Frame slope factor:"));
-  LineEdit *frameSlopeFactorLineEdit = new LineEdit("render", "frameSlopeFactor", "1.5");
+  LineEdit *frameSlopeFactorLineEdit = new LineEdit("render", "frameSlopeFactor", "0.75");
   connect(resetButton, &QPushButton::clicked, frameSlopeFactorLineEdit, &LineEdit::resetToDefault);
 
   CheckBox *enableHangersCheckBox = new CheckBox("render", "enableHangers", tr("Enable hangers"), true);
