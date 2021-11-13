@@ -55,7 +55,7 @@ MainWindow::MainWindow()
   minThicknessSlider = new Slider("render", "minThickness", 8, 100, 8, 10);
   
   QLabel *totalThicknessLabel = new QLabel(tr("Total thickness (mm):"));
-  totalThicknessSlider = new Slider("render", "totalThickness", 20, 150, 30, 10);
+  totalThicknessSlider = new Slider("render", "totalThickness", 20, 150, 40, 10);
 
   QLabel *borderLabel = new QLabel(tr("Frame border (mm):"));
   borderSlider = new Slider("render", "frameBorder", 20, 500, 30, 10);
@@ -64,7 +64,7 @@ MainWindow::MainWindow()
   widthSlider = new Slider("render", "width", 200, 4000, 2000, 10);
 
   QLabel *inputLabel = new QLabel(tr("Input image filename:"));
-  inputLineEdit = new QLineEdit(settings->value("main/inputFilePath", "example.png").toString());
+  inputLineEdit = new QLineEdit(settings->value("main/inputFilePath", "examples/hummingbird.png").toString());
   inputButton = new QPushButton(tr("..."));
   connect(inputButton, &QPushButton::clicked, this, &MainWindow::inputSelect);
   QHBoxLayout *inputLayout = new QHBoxLayout();
