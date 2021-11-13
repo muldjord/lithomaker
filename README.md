@@ -13,6 +13,11 @@ NOTE! The resulting lithophane is currently lying flat down when the STL is impo
 
 ## Release notes
 
+#### Version 0.7.0 (In progress, unreleased)
+* Added optional hangers to top of frame
+* Added config options for hangers
+* Fixed resetToDefault for sliders
+
 #### Version 0.6.1 (13th Nov 2021)
 * Corrected frame front side distance from backside
 * Fixed config key to 'LithoMaker'
