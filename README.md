@@ -17,6 +17,7 @@ NOTE! The resulting lithophane is currently lying flat down when the STL is impo
 * Added optional hangers to top of frame
 * Added config options for hangers
 * Fixed resetToDefault for sliders
+* Added 'elephant.png', 'hummingbird.png' and 'cheetah.png' to repository. All 3 images under public domain (I took them myself)
 
 #### Version 0.6.1 (13th Nov 2021)
 * Corrected frame front side distance from backside
