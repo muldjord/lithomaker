@@ -13,7 +13,7 @@ NOTE! The resulting lithophane is currently lying flat down when the STL is impo
 
 ## Release notes
 
-#### Version 0.7.0 (In progress, unreleased)
+#### Version 0.7.0 (14th Nov 2021)
 * Added optional hangers to top of frame
 * Added config options for hangers
 * Fixed resetToDefault for sliders
