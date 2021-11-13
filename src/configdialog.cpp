@@ -30,7 +30,7 @@
 
 ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent)
 {
-  setFixedSize(600, 400);
+  setFixedSize(600, 500);
   contentsWidget = new QListWidget;
   contentsWidget->setViewMode(QListView::IconMode);
   contentsWidget->setIconSize(QSize(64, 64));

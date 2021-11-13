@@ -71,6 +71,7 @@ Slider::~Slider()
 
 void Slider::resetToDefault()
 {
+  slider->setValue((float)stdValue * exponent);
   lineEdit->setText(QString::number((float)stdValue / exponent));
 }
 

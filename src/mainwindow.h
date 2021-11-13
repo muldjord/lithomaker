@@ -95,8 +95,9 @@ private:
   
   QVector3D getVertex(float x, float y, float z, const bool &scale = false);
   
-  QList<QVector3D> addStabilizer(const float &x, const float &height);
   QList<QVector3D> addFrame(const float &width, const float &height);
+  QList<QVector3D> addHangers(const float &width, const float &height);
+  QList<QVector3D> addStabilizer(const float &x, const float &height);
 };
 
 #endif // __MAINWINDOW_H__

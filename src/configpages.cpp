@@ -30,6 +30,7 @@
 #include "lineedit.h"
 #include "combobox.h"
 #include "checkbox.h"
+#include "slider.h"
 
 extern QSettings *settings;
 
@@ -37,14 +38,8 @@ MainPage::MainPage(QWidget *parent) : QWidget(parent)
 {
   QPushButton *resetButton = new QPushButton(tr("Reset all to defaults"));
 
-  /*
-  CheckBox *alwaysMaximizeCheckBox = new CheckBox(tr("Always maximize window on startup"), "Main", "alwaysMaximize", true);
-  connect(resetButton, &QPushButton::clicked, alwaysMaximizeCheckBox, &CheckBox::resetToDefault);
-  */
-
   QVBoxLayout *layout = new QVBoxLayout();
   layout->addWidget(resetButton);
-  //layout->addWidget(alwaysMaximizeCheckBox);
   layout->addStretch();
   setLayout(layout);
 }
@@ -70,24 +65,14 @@ RenderPage::RenderPage(QWidget *parent) : QWidget(parent)
   QLabel *frameSlopeFactorLabel = new QLabel(tr("Frame slope factor:"));
   LineEdit *frameSlopeFactorLineEdit = new LineEdit("render", "frameSlopeFactor", "1.5");
   connect(resetButton, &QPushButton::clicked, frameSlopeFactorLineEdit, &LineEdit::resetToDefault);
-  /*
-  QLabel *delimiterLabel = new QLabel(tr("Delimiter:"));
-  ComboBox *delimiterComboBox = new ComboBox("Render", "delimiter", "tab");
-  delimiterComboBox->addConfigItem("Tab", "tab");
-  delimiterComboBox->addConfigItem("Semicolon", "semicolon");
-  delimiterComboBox->addConfigItem("Comma", "comma");
-  delimiterComboBox->setFromConfig();
-  connect(resetButton, SIGNAL(clicked()), delimiterComboBox, SLOT(resetToDefault()));
 
-  QLabel *distanceUnitLabel = new QLabel(tr("Distance unit:"));
-  LineEdit *distanceUnitLineEdit = new LineEdit("Render", "distanceUnit", "μm");
-  connect(resetButton, SIGNAL(clicked()), distanceUnitLineEdit, SLOT(resetToDefault()));
+  CheckBox *enableHangersCheckBox = new CheckBox("render", "enableHangers", tr("Enable hangers"), true);
+  connect(resetButton, &QPushButton::clicked, enableHangersCheckBox, &CheckBox::resetToDefault);
 
-  QLabel *timeUnitLabel = new QLabel(tr("Time unit:"));
-  LineEdit *timeUnitLineEdit = new LineEdit("Render", "timeUnit", "s");
-  connect(resetButton, SIGNAL(clicked()), timeUnitLineEdit, SLOT(resetToDefault()));
-  */
-  
+  QLabel *hangersLabel = new QLabel(tr("Number of hangers:"));
+  Slider *hangersSlider = new Slider("render", "hangers", 1, 4, 2, 1);
+  connect(resetButton, &QPushButton::clicked, hangersSlider, &Slider::resetToDefault);
+
   QVBoxLayout *layout = new QVBoxLayout();
   layout->addWidget(resetButton);
   layout->addWidget(enableStabilizersCheckBox);
@@ -98,13 +83,9 @@ RenderPage::RenderPage(QWidget *parent) : QWidget(parent)
   layout->addWidget(stabilizerHeightFactorLineEdit);
   layout->addWidget(frameSlopeFactorLabel);
   layout->addWidget(frameSlopeFactorLineEdit);
-  /*
-  layout->addWidget(delimiterComboBox);
-  layout->addWidget(distanceUnitLabel);
-  layout->addWidget(distanceUnitLineEdit);
-  layout->addWidget(timeUnitLabel);
-  layout->addWidget(timeUnitLineEdit);
-  */
+  layout->addWidget(enableHangersCheckBox);
+  layout->addWidget(hangersLabel);
+  layout->addWidget(hangersSlider);
   layout->addStretch();
   setLayout(layout);
 }
