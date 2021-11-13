@@ -13,7 +13,7 @@ NOTE! The resulting lithophane is currently lying flat down when the STL is impo
 
 ## Release notes
 
-#### Version 0.6.1 (11th Nov 2021)
+#### Version 0.6.1 (13th Nov 2021)
 * Corrected frame front side distance from backside
 * Fixed config key to 'LithoMaker'
 * Changed lineedits to sliders to avoid decimal locale conversion issues and for ease of use
