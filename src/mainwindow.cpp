@@ -46,6 +46,10 @@ MainWindow::MainWindow()
     setMinimumWidth(640);
   }
 
+  if(settings->allKeys().count() == 0) {
+    showPreferences();
+  }
+
   setWindowTitle("LithoMaker v" VERSION);
 
   createActions();
@@ -367,7 +371,7 @@ QList<QVector3D> MainWindow::addFrame(const float &width, const float &height)
 {
   float minThickness = settings->value("render/minThickness").toFloat();
   float depth = settings->value("render/totalThickness").toFloat() - minThickness;
-  float frameSlope = depth / settings->value("render/frameSlopeFactor", "1.5").toFloat();
+  float frameSlope = depth * settings->value("render/frameSlopeFactor", "0.75").toFloat();
 
   QList<QVector3D> frame;
   frame.append(getVertex(width, height, - minThickness));
