@@ -56,7 +56,7 @@ To get the best results, you need to do a bit of work on your photo to ensure it
 * Now select and crop the image if you want to using the select tool and **Image->Crop to Selection**.
 * If your image is wider than 1500 pixels, I recommend now scaling it to 1500 pixels width using **Image->Scale Image...** and adjusting *Width* to 1500. **Don't scale it if it's already lower than 1500 pixels in width**. This step is optional of course, but keep in mind that more pixels means a more complex 3D mesh, and at some point the details are simply too tiny to print anyway, so the lithophane will just take longer to process, take up more space on your disk, and take up more memory when importing into the slicer.
 * Now convert the image to grayscale using **Image->Mode->Grayscale** and voila! It suddenly looks really good!
-* The final step is to export the image as a PNG using **File->Export As...** and naming is *yourname.png*.
+* The final step is to export the image as a PNG using **File->Export As...**.
 
 ## Release notes
 
