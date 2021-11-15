@@ -28,22 +28,23 @@ Most of the options in LithoMaker should be pretty self-explanatory. But here's 
 * Options that require change less often, are placed in the Preferences menu.
 
 The default settings when running LithoMaker for the first time are great as a starting point. Adjust if needed:
-* 'Minimum thickness' does exactly what it says. It defines the thickness of the lithophane in places where the image is beightest / whitest. The minimum is 0.8 mm. Thinner would compromize the print structure.
-* 'Total thickness' is the *total* thickness of the lithophane - including the minimum thickness. So basically this is the thickness that make up the darkest areas of the lithophane, corresponding to the darkest tones of the input image. I would never go above 5.0 mm on this. But you can if you absolutely insist!
-* 'Frame border' is simply the width of the frame border in milimeters.
-* 'Width' defines the total width of the lithophane, including the frame borders. The height is adjusted relative to this automatically using the dimensions of the input image.
-* 'Input image filename' is the PNG image you want to convert to a lithophane.
-* 'Output STL filename' is the export STL filename that you will later import into the 3d printing slicer.
+* *Minimum thickness* does exactly what it says. It defines the thickness of the lithophane in places where the image is brightest. The minimum is 0.8 mm. Thinner would compromize the print structure.
+* *Total thickness* is the *total* thickness of the lithophane - including the minimum thickness. So basically this is the thickness that make up the darkest areas of the lithophane, corresponding to the darkest tones of the input image. I would never go above 5.0 mm on this. But you can if you absolutely insist!
+* *Frame border* is simply the width of the frame border in milimeters.
+* *Width* defines the total width of the lithophane, including the frame borders. The height is adjusted relative to this automatically using the dimensions of the input image.
+* *Input image filename* is the PNG image you want to convert to a lithophane.
+* *Output STL filename* is the export STL filename that you will later import into the 3d printing slicer.
 
 ### Render preferences
-* 'Stabilizers' are sloped pieces of plastic that lean against the lithophane from the front and back. They provide support when printing to avoid wobbling, increasing the risk of print failure. Unless you configure them to be permanent, they can be easily removed after the print is finished.
+* *Stabilizers* are sloped pieces of plastic that lean against the lithophane from the front and back. They provide support when printing to avoid wobbling, increasing the risk of print failure. Unless you configure them to be permanent, they can be easily removed after the print is finished.
 * Stabilizers will only be added if the lithophane is higher than 'Minimum height before adding stabilizers'.
 * Stabilizer height factor decides the height of the stabilizers in relation to the total height of the frame.
 * The frame slope factor decides how sloped the connection between the front inside of the frame is to the back inside of the frame inwards towards the image.
-* 'Hangers' are tiny loops that are placed on top of the lithophane, allowing you to thread them and suspend the print in a window frame or in front of a light source.
+* *Hangers* are tiny plastic loops that are placed on top of the lithophane, allowing you to thread them and suspend the print in a window frame or in front of a light source.
+
 ### Export preferences
 * The STL 3D mesh file format supports both an ascii and a binary format. If you don't know what that means, just leave it on 'Binary'. 'Binary' takes up less space and the result is exactly the same when importing the file into a slicer.
-* 'Always overwrite existing file' simply does what it says. Normally LithoMaker asks you if you want to overwrite an existing file. Checking this will disable that dialog and simply *always* overwrite it without asking.
+* *Always overwrite existing file* simply does what it says. Normally LithoMaker asks you if you want to overwrite an existing file. Checking this will disable that dialog and simply *always* overwrite it without asking.
 
 ### Preparing a photo for conversion
 First of all, make sure your image is of high quality. Low quality JPEG's, often grabbed from the internet, look terrible as lithophanes due to their many JPEG artifacts. So make sure you use a high quality image with no artifacts to begin with.
