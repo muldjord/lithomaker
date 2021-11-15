@@ -36,7 +36,7 @@ The default settings when running LithoMaker for the first time are great as a s
 * *Output STL filename* is the export STL filename that you will later import into the 3d printing slicer.
 
 ### Render preferences
-* *Stabilizers* are sloped pieces of plastic that lean against the lithophane from the front and back. They provide support when printing to avoid wobbling, increasing the risk of print failure. Unless you configure them to be permanent, they can be easily removed after the print is finished.
+* *Stabilizers* are sloped pieces of plastic that lean against the lithophane from the front and back. They provide support when printing to avoid wobbling which increases the risk of print failure. Unless you configure them to be permanent, they can be easily removed after the print is finished.
 * Stabilizers will only be added if the lithophane is higher than 'Minimum height before adding stabilizers'.
 * Stabilizer height factor decides the height of the stabilizers in relation to the total height of the frame.
 * The frame slope factor decides how sloped the connection between the front inside of the frame is to the back inside of the frame inwards towards the image.
