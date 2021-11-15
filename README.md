@@ -46,7 +46,7 @@ The default settings when running LithoMaker for the first time are great as a s
 * 'Always overwrite existing file' simply does what it says. Normally LithoMaker asks you if you want to overwrite an existing file. Checking this will disable that dialog and simply *always* overwrite it without asking.
 
 ### Preparing a photo for conversion
-first of all, make sure your image is of high quality. Low quality JPEG's, often grabbed from the internet, look terrible as lithophanes due to their many JPEG artifacts. So make sure you use a high quality image with no artifacts to begin with.
+First of all, make sure your image is of high quality. Low quality JPEG's, often grabbed from the internet, look terrible as lithophanes due to their many JPEG artifacts. So make sure you use a high quality image with no artifacts to begin with.
 
 To get the best results, you need to do a bit of work on your photo to ensure it is optimal for conversion. The following describes a workflow which will give you optimal results using the open source image editor [Gimp](https://www.gimp.org/).
 * Open the photo you want to convert.
