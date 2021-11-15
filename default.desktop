@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=LithoMaker
+Exec=AppRun %F
+Icon=default
+Comment=Lithophane 3D mesh renderer and exporter
+Terminal=true
+Categories=Graphics;
+X-AppImage-Version=0.7.0
