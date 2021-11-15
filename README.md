@@ -9,6 +9,54 @@ LithoMaker DOES NOT upload or process your image files online. All processing is
 
 LithoMaker is a fairly simple piece of software. It reads the input PNG image, inverts it and creates a height-mapped 3D mesh from the grayscale values. It then creates the remaining triangles needed for a 3D printable lithophane with a frame and optional hangers and printing stabilizers. The mesh is then exported as an STL file, ready for importing into a 3D printing slicer.
 
+## Running LithoMaker
+### Ubuntu Linux
+* Download the latest LithoMaker AppImage from [here](https://github.com/muldjord/lithomaker/releases).
+* Right-click the AppImage file, choose Properties, Permissions, and check "Allow executing file as program".
+* Double-click the AppImage file to run it.
+
+The AppImage will probably work with many other distributions as well. Download and try it out.
+
+### Windows
+* Download the latest win32 zip file from [here](https://github.com/muldjord/lithomaker/releases).
+* Unpack the zip file.
+* Run the LithoMaker.exe program.
+
+## Using LithoMaker
+Most of the options in LithoMaker should be pretty self-explanatory. But here's some pointers to get you started:
+* Options relating to the physical dimensions of the lithophane are directly visible in the main UI when starting LithoMaker.
+* Options that require change less often, are placed in the Preferences menu.
+
+The default settings when running LithoMaker for the first time are great as a starting point. Adjust if needed:
+* 'Minimum thickness' does exactly what it says. It defines the thickness of the lithophane in places where the image is beightest / whitest. The minimum is 0.8 mm. Thinner would compromize the print structure.
+* 'Total thickness' is the *total* thickness of the lithophane - including the minimum thickness. So basically this is the thickness that make up the darkest areas of the lithophane, corresponding to the darkest tones of the input image. I would never go above 5.0 mm on this. But you can if you absolutely insist!
+* 'Frame border' is simply the width of the frame border in milimeters.
+* 'Width' defines the total width of the lithophane, including the frame borders. The height is adjusted relative to this automatically using the dimensions of the input image.
+* 'Input image filename' is the PNG image you want to convert to a lithophane.
+* 'Output STL filename' is the export STL filename that you will later import into the 3d printing slicer.
+
+### Render preferences
+* 'Stabilizers' are sloped pieces of plastic that lean against the lithophane from the front and back. They provide support when printing to avoid wobbling, increasing the risk of print failure. Unless you configure them to be permanent, they can be easily removed after the print is finished.
+* Stabilizers will only be added if the lithophane is higher than 'Minimum height before adding stabilizers'.
+* Stabilizer height factor decides the height of the stabilizers in relation to the total height of the frame.
+* The frame slope factor decides how sloped the connection between the front inside of the frame is to the back inside of the frame inwards towards the image.
+* 'Hangers' are tiny loops that are placed on top of the lithophane, allowing you to thread them and suspend the print in a window frame or in front of a light source.
+### Export preferences
+* The STL 3D mesh file format supports both an ascii and a binary format. If you don't know what that means, just leave it on 'Binary'. 'Binary' takes up less space and the result is exactly the same when importing the file into a slicer.
+* 'Always overwrite existing file' simply does what it says. Normally LithoMaker asks you if you want to overwrite an existing file. Checking this will disable that dialog and simply *always* overwrite it without asking.
+
+### Preparing a photo for conversion
+first of all, make sure your image is of high quality. Low quality JPEG's, often grabbed from the internet, look terrible as lithophanes due to their many JPEG artifacts. So make sure you use a high quality image with no artifacts to begin with.
+
+To get the best results, you need to do a bit of work on your photo to ensure it is optimal for conversion. The following describes a workflow which will give you optimal results using the open source image editor [Gimp](https://www.gimp.org/).
+* Open the photo you want to convert.
+* Choose **Filters->Enhance->Noise Reduction**. Set *Strength* so that it removes noisy prickling pixels without loosing too much detail. For a large image a value of 4 is good. For smaller images you need to go lower. Experiment! There are no wrong answers. The point is to smooth over surfaces of the subject, but keep details.
+* Choose **Colors->Auto->White balance**. This stretches the color dynamics of the image as far as it can go, meaning it will have the best possible contrast. This is hugely important to get the best looking lithophane. Don't worry if the colors look slightly odd. We remedy that in the next steps.
+* Now select and crop the image if you want to using the select tool and **Image->Crop to Selection**.
+* If your image is wider than 1500 pixels, I recommend now scaling it to 1500 pixels width using **Image->Scale Image...** and adjusting *Width* to 1500. **Don't scale it if it's already lower than 1550 pixels in width**. This step is optional of course, but keep in mind that more pixels means a more complex 3D mesh, and at some point the details are simply too tiny to print anyway, so the lithophane will simply just take longer to process, take up more space on your disk, and take up more memory when importing into the slicer.
+* Now convert the image to grayscale using **Image->Mode->Grayscale** and voila! It suddenly looks really good!
+* The final step is to export the image as a PNG using **File->Export As...** and naming is *yourname.png*.
+
 ## Release notes
 
 #### Version 0.7.0 (14th Nov 2021)
