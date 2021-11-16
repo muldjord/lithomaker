@@ -62,6 +62,9 @@ To get the best results, you need to do a bit of work on your photo to ensure it
 
 ## Release notes
 
+#### Version 0.7.1 (In progress, unreleased)
+* Added 'PNG' to main UI input filename label
+
 #### Version 0.7.0 (14th Nov 2021)
 * Added optional hangers to top of frame
 * Added config options for hangers
