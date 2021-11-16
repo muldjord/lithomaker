@@ -25,7 +25,7 @@ The AppImage will probably work with many other distributions as well. Download 
 * Run the LithoMaker.exe program.
 
 ## Using LithoMaker
-Most of the options in LithoMaker should be pretty self-explanatory. But here's some pointers to get you started:
+Most of the options in LithoMaker should be pretty self-explanatory. But here are some pointers to get you started:
 * Options relating to the physical dimensions of the lithophane are directly visible in the main UI when starting LithoMaker.
 * Options that require change less often, are placed in the Preferences menu.
 
