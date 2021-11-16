@@ -67,7 +67,7 @@ MainWindow::MainWindow()
   QLabel *widthLabel = new QLabel(tr("Width, including frame borders (mm):"));
   widthSlider = new Slider("render", "width", 200, 4000, 2000, 10);
 
-  QLabel *inputLabel = new QLabel(tr("Input image filename:"));
+  QLabel *inputLabel = new QLabel(tr("Input PNG image filename:"));
   inputLineEdit = new QLineEdit(settings->value("main/inputFilePath", "examples/hummingbird.png").toString());
   inputButton = new QPushButton(tr("..."));
   connect(inputButton, &QPushButton::clicked, this, &MainWindow::inputSelect);
