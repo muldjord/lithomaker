@@ -39,13 +39,13 @@ The default settings when running LithoMaker for the first time are great as a s
 
 ### Render preferences
 * *Stabilizers* are sloped pieces of plastic that lean against the lithophane from the front and back. They provide support when printing to avoid wobbling which increases the risk of print failure. Unless you configure them to be permanent, they can be easily removed after the print is finished.
-* Stabilizers will only be added if the lithophane is higher than 'Minimum height before adding stabilizers'.
+* Stabilizers will only be added if the lithophane is higher than *Minimum height before adding stabilizers*.
 * Stabilizer height factor decides the height of the stabilizers in relation to the total height of the frame.
 * The frame slope factor decides how sloped the connection between the front inside of the frame is to the back inside of the frame inwards towards the image.
 * *Hangers* are tiny plastic loops that are placed on top of the lithophane, allowing you to thread them and suspend the print in a window frame or in front of a light source.
 
 ### Export preferences
-* The STL 3D mesh file format supports both an ascii and a binary format. If you don't know what that means, just leave it on 'Binary'. 'Binary' takes up less space and the result is exactly the same when importing the file into a slicer.
+* The STL 3D mesh file format supports both an ascii and a binary format. If you don't know what that means, just leave it on *Binary*. *Binary* takes up less space and the result is exactly the same when importing the file into a slicer.
 * *Always overwrite existing file* simply does what it says. Normally LithoMaker asks you if you want to overwrite an existing file. Checking this will disable that dialog and simply *always* overwrite it without asking.
 
 ### Preparing a photo for conversion
