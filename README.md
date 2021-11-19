@@ -27,7 +27,7 @@ The AppImage will probably work with many other distributions as well. Download 
 ## Using LithoMaker
 Most of the options in LithoMaker should be pretty self-explanatory. But here are some pointers to get you started:
 * Options relating to the physical dimensions of the lithophane are directly visible in the main UI when starting LithoMaker.
-* Options that require change less often, are placed in the Preferences menu.
+* Options that require change less often are placed under **Options->Edit Preferences...**.
 
 The default settings when running LithoMaker for the first time are great as a starting point. Adjust if needed:
 * *Minimum thickness* does exactly what it says. It defines the thickness of the lithophane in places where the image is brightest. The minimum is 0.8 mm. Thinner would compromize the print structure.
