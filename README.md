@@ -31,7 +31,7 @@ Most of the options in LithoMaker should be pretty self-explanatory. But here ar
 
 The default settings when running LithoMaker for the first time are great as a starting point. Adjust if needed:
 * *Minimum thickness* does exactly what it says. It defines the thickness of the lithophane in places where the image is brightest. The minimum is 0.8 mm. Thinner would compromize the print structure.
-* *Total thickness* is the *total* thickness of the lithophane - including the minimum thickness. So basically this is the thickness that make up the darkest areas of the lithophane, corresponding to the darkest tones of the input image. I would never go above 5.0 mm on this. But you can if you absolutely insist!
+* *Total thickness* is the *total* thickness of the lithophane *including* the minimum thickness. So basically this is the thickness that make up the darkest areas of the lithophane, corresponding to the darkest tones of the input image. I would never go above 5.0 mm on this. But you can if you absolutely insist!
 * *Frame border* is simply the width of the frame border in milimeters.
 * *Width* defines the total width of the lithophane, including the frame borders. The height is adjusted relative to this automatically using the dimensions of the input image.
 * *Input image filename* is the PNG image you want to convert to a lithophane.
