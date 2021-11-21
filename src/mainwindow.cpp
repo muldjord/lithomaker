@@ -190,7 +190,7 @@ void MainWindow::createMesh()
       image = image.scaledToHeight(maxSize);
     }
   }
-  if(image.format() != QImage::Format_Grayscale8 &&
+  if(!image.isGrayscale() &&
      QMessageBox::question(this, tr("Not grayscale"), tr("The image is reported to not be grayscale. Do you want LithoMaker to convert it to grayscale before processing it?")) == QMessageBox::Yes) {
     image = image.convertToFormat(QImage::Format_Grayscale8);
   }
