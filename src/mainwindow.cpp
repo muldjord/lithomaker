@@ -239,7 +239,7 @@ void MainWindow::createMesh()
       polygons.append(getVertex(x, y, getPixel(image, x, y) * depthFactor, true));
       polygons.append(getVertex(x + 1, y, getPixel(image, x + 1, y) * depthFactor, true));
       polygons.append(getVertex(x + 1, y + 1, getPixel(image, x + 1, y + 1) * depthFactor, true));
-      }
+    }
     // Close right side
     polygons.append(getVertex(image.width() - 1, y + 1, getPixel(image, image.width() - 1, y + 1) * depthFactor, true));
     polygons.append(getVertex(image.width() - 1, y, getPixel(image, image.width() - 1, y) * depthFactor, true));
