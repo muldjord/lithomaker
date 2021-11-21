@@ -497,117 +497,117 @@ QList<QVector3D> MainWindow::addHangers(const float &width, const float &height)
 
   QList<QVector3D> hangers;
   for(int a = 0; a < noOfHangers; a++) {
-hangers.append(getVertex(x + 3, height, 0.000000));
-hangers.append(getVertex(x, height, 0.000000));
-hangers.append(getVertex(x + 3, height + 3, 0.000000));
+    hangers.append(getVertex(x + 3, height, 0.000000));
+    hangers.append(getVertex(x, height, 0.000000));
+    hangers.append(getVertex(x + 3, height + 3, 0.000000));
 
-hangers.append(getVertex(x + 3, height + 3, 0.000000));
-hangers.append(getVertex(x + 6, height + 3, 0.000000));
-hangers.append(getVertex(x + 9, height, 0.000000));
+    hangers.append(getVertex(x + 3, height + 3, 0.000000));
+    hangers.append(getVertex(x + 6, height + 3, 0.000000));
+    hangers.append(getVertex(x + 9, height, 0.000000));
 
-hangers.append(getVertex(x + 9, height, 0.000000));
-hangers.append(getVertex(x + 6, height, 0.000000));
-hangers.append(getVertex(x + 5, height + 1, 0.000000));
+    hangers.append(getVertex(x + 9, height, 0.000000));
+    hangers.append(getVertex(x + 6, height, 0.000000));
+    hangers.append(getVertex(x + 5, height + 1, 0.000000));
 
-hangers.append(getVertex(x + 4, height + 1, 0.000000));
-hangers.append(getVertex(x + 3, height, 0.000000));
-hangers.append(getVertex(x + 3, height + 3, 0.000000));
+    hangers.append(getVertex(x + 4, height + 1, 0.000000));
+    hangers.append(getVertex(x + 3, height, 0.000000));
+    hangers.append(getVertex(x + 3, height + 3, 0.000000));
 
-hangers.append(getVertex(x + 3, height + 3, 0.000000));
-hangers.append(getVertex(x + 9, height, 0.000000));
-hangers.append(getVertex(x + 5, height + 1, 0.000000));
+    hangers.append(getVertex(x + 3, height + 3, 0.000000));
+    hangers.append(getVertex(x + 9, height, 0.000000));
+    hangers.append(getVertex(x + 5, height + 1, 0.000000));
 
-hangers.append(getVertex(x + 3, height + 3, 0.000000));
-hangers.append(getVertex(x + 5, height + 1, 0.000000));
-hangers.append(getVertex(x + 4, height + 1, 0.000000));
+    hangers.append(getVertex(x + 3, height + 3, 0.000000));
+    hangers.append(getVertex(x + 5, height + 1, 0.000000));
+    hangers.append(getVertex(x + 4, height + 1, 0.000000));
 
-hangers.append(getVertex(x + 3, height + 3, 2));
-hangers.append(getVertex(x, height, 2));
-hangers.append(getVertex(x + 3, height, 2));
+    hangers.append(getVertex(x + 3, height + 3, 2));
+    hangers.append(getVertex(x, height, 2));
+    hangers.append(getVertex(x + 3, height, 2));
 
-hangers.append(getVertex(x + 3, height + 3, 2));
-hangers.append(getVertex(x + 3, height, 2));
-hangers.append(getVertex(x + 4, height + 1, 2));
+    hangers.append(getVertex(x + 3, height + 3, 2));
+    hangers.append(getVertex(x + 3, height, 2));
+    hangers.append(getVertex(x + 4, height + 1, 2));
 
-hangers.append(getVertex(x + 9, height, 2));
-hangers.append(getVertex(x + 6, height + 3, 2));
-hangers.append(getVertex(x + 3, height + 3, 2));
+    hangers.append(getVertex(x + 9, height, 2));
+    hangers.append(getVertex(x + 6, height + 3, 2));
+    hangers.append(getVertex(x + 3, height + 3, 2));
 
-hangers.append(getVertex(x + 5, height + 1, 2));
-hangers.append(getVertex(x + 6, height, 2));
-hangers.append(getVertex(x + 9, height, 2));
+    hangers.append(getVertex(x + 5, height + 1, 2));
+    hangers.append(getVertex(x + 6, height, 2));
+    hangers.append(getVertex(x + 9, height, 2));
 
-hangers.append(getVertex(x + 3, height + 3, 2));
-hangers.append(getVertex(x + 4, height + 1, 2));
-hangers.append(getVertex(x + 5, height + 1, 2));
+    hangers.append(getVertex(x + 3, height + 3, 2));
+    hangers.append(getVertex(x + 4, height + 1, 2));
+    hangers.append(getVertex(x + 5, height + 1, 2));
 
-hangers.append(getVertex(x + 5, height + 1, 2));
-hangers.append(getVertex(x + 9, height, 2));
-hangers.append(getVertex(x + 3, height + 3, 2));
+    hangers.append(getVertex(x + 5, height + 1, 2));
+    hangers.append(getVertex(x + 9, height, 2));
+    hangers.append(getVertex(x + 3, height + 3, 2));
 
-hangers.append(getVertex(x + 5, height + 1, 0.000000));
-hangers.append(getVertex(x + 6, height, 0.000000));
-hangers.append(getVertex(x + 6, height, 2));
+    hangers.append(getVertex(x + 5, height + 1, 0.000000));
+    hangers.append(getVertex(x + 6, height, 0.000000));
+    hangers.append(getVertex(x + 6, height, 2));
 
-hangers.append(getVertex(x + 5, height + 1, 0.000000));
-hangers.append(getVertex(x + 6, height, 2));
-hangers.append(getVertex(x + 5, height + 1, 2));
+    hangers.append(getVertex(x + 5, height + 1, 0.000000));
+    hangers.append(getVertex(x + 6, height, 2));
+    hangers.append(getVertex(x + 5, height + 1, 2));
 
-hangers.append(getVertex(x + 9, height, 0.000000));
-hangers.append(getVertex(x + 6, height + 3, 0.000000));
-hangers.append(getVertex(x + 6, height + 3, 2));
+    hangers.append(getVertex(x + 9, height, 0.000000));
+    hangers.append(getVertex(x + 6, height + 3, 0.000000));
+    hangers.append(getVertex(x + 6, height + 3, 2));
 
-hangers.append(getVertex(x + 9, height, 0.000000));
-hangers.append(getVertex(x + 6, height + 3, 2));
-hangers.append(getVertex(x + 9, height, 2));
+    hangers.append(getVertex(x + 9, height, 0.000000));
+    hangers.append(getVertex(x + 6, height + 3, 2));
+    hangers.append(getVertex(x + 9, height, 2));
 
-hangers.append(getVertex(x + 3, height + 3, 0.000000));
-hangers.append(getVertex(x, height, 0.000000));
-hangers.append(getVertex(x, height, 2));
+    hangers.append(getVertex(x + 3, height + 3, 0.000000));
+    hangers.append(getVertex(x, height, 0.000000));
+    hangers.append(getVertex(x, height, 2));
 
-hangers.append(getVertex(x + 3, height + 3, 0.000000));
-hangers.append(getVertex(x, height, 2));
-hangers.append(getVertex(x + 3, height + 3, 2));
+    hangers.append(getVertex(x + 3, height + 3, 0.000000));
+    hangers.append(getVertex(x, height, 2));
+    hangers.append(getVertex(x + 3, height + 3, 2));
 
-hangers.append(getVertex(x, height, 0.000000));
-hangers.append(getVertex(x + 3, height, 0.000000));
-hangers.append(getVertex(x + 3, height, 2));
+    hangers.append(getVertex(x, height, 0.000000));
+    hangers.append(getVertex(x + 3, height, 0.000000));
+    hangers.append(getVertex(x + 3, height, 2));
 
-hangers.append(getVertex(x, height, 0.000000));
-hangers.append(getVertex(x + 3, height, 2));
-hangers.append(getVertex(x, height, 2));
+    hangers.append(getVertex(x, height, 0.000000));
+    hangers.append(getVertex(x + 3, height, 2));
+    hangers.append(getVertex(x, height, 2));
 
-hangers.append(getVertex(x + 4, height + 1, 0.000000));
-hangers.append(getVertex(x + 5, height + 1, 0.000000));
-hangers.append(getVertex(x + 5, height + 1, 2));
+    hangers.append(getVertex(x + 4, height + 1, 0.000000));
+    hangers.append(getVertex(x + 5, height + 1, 0.000000));
+    hangers.append(getVertex(x + 5, height + 1, 2));
 
-hangers.append(getVertex(x + 4, height + 1, 0.000000));
-hangers.append(getVertex(x + 5, height + 1, 2));
-hangers.append(getVertex(x + 4, height + 1, 2));
+    hangers.append(getVertex(x + 4, height + 1, 0.000000));
+    hangers.append(getVertex(x + 5, height + 1, 2));
+    hangers.append(getVertex(x + 4, height + 1, 2));
 
-hangers.append(getVertex(x + 6, height, 0.000000));
-hangers.append(getVertex(x + 9, height, 0.000000));
-hangers.append(getVertex(x + 9, height, 2));
+    hangers.append(getVertex(x + 6, height, 0.000000));
+    hangers.append(getVertex(x + 9, height, 0.000000));
+    hangers.append(getVertex(x + 9, height, 2));
 
-hangers.append(getVertex(x + 6, height, 0.000000));
-hangers.append(getVertex(x + 9, height, 2));
-hangers.append(getVertex(x + 6, height, 2));
+    hangers.append(getVertex(x + 6, height, 0.000000));
+    hangers.append(getVertex(x + 9, height, 2));
+    hangers.append(getVertex(x + 6, height, 2));
 
-hangers.append(getVertex(x + 6, height + 3, 0.000000));
-hangers.append(getVertex(x + 3, height + 3, 0.000000));
-hangers.append(getVertex(x + 3, height + 3, 2));
+    hangers.append(getVertex(x + 6, height + 3, 0.000000));
+    hangers.append(getVertex(x + 3, height + 3, 0.000000));
+    hangers.append(getVertex(x + 3, height + 3, 2));
 
-hangers.append(getVertex(x + 6, height + 3, 0.000000));
-hangers.append(getVertex(x + 3, height + 3, 2));
-hangers.append(getVertex(x + 6, height + 3, 2));
+    hangers.append(getVertex(x + 6, height + 3, 0.000000));
+    hangers.append(getVertex(x + 3, height + 3, 2));
+    hangers.append(getVertex(x + 6, height + 3, 2));
 
-hangers.append(getVertex(x + 3, height, 0.000000));
-hangers.append(getVertex(x + 4, height + 1, 0.000000));
-hangers.append(getVertex(x + 4, height + 1, 2));
+    hangers.append(getVertex(x + 3, height, 0.000000));
+    hangers.append(getVertex(x + 4, height + 1, 0.000000));
+    hangers.append(getVertex(x + 4, height + 1, 2));
 
-hangers.append(getVertex(x + 3, height, 0.000000));
-hangers.append(getVertex(x + 4, height + 1, 2));
-hangers.append(getVertex(x + 3, height, 2));
+    hangers.append(getVertex(x + 3, height, 0.000000));
+    hangers.append(getVertex(x + 4, height + 1, 2));
+    hangers.append(getVertex(x + 3, height, 2));
 
     // Move over to the next hanger placement
     x += xDelta * 2;
