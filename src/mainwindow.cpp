@@ -190,8 +190,8 @@ void MainWindow::createMesh()
       image = image.scaledToHeight(maxSize);
     }
   }
-  if(!image.isGrayscale() &&
-     QMessageBox::question(this, tr("Not grayscale"), tr("The image is reported to not be grayscale. Do you want LithoMaker to convert it to grayscale before processing it?")) == QMessageBox::Yes) {
+  if(!image.isGrayscale()) {
+    printf("Converting image to grayscale.\n");
     image = image.convertToFormat(QImage::Format_Grayscale8);
   }
   image.invertPixels();
