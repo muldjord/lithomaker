@@ -43,7 +43,9 @@ ComboBox::ComboBox(const QString &group, const QString &name,
     settings->setValue(key, stdValue);
   }
   configValue = settings->value(key, "1").toString();
-  
+
+  setToolTip(tr("Default value: ") + stdValue);
+
   connect(this, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ComboBox::saveToConfig);
 }
 

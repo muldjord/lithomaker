@@ -43,6 +43,7 @@ LineEdit::LineEdit(const QString &group, const QString &name, const QString &std
     settings->setValue(key, stdValue);
   }
   setText(settings->value(key, stdValue).toString());
+  setToolTip(tr("Default value: ") + stdValue);
 
   connect(this, &QLineEdit::textChanged, this, &LineEdit::saveToConfig);
 }

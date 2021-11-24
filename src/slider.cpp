@@ -46,6 +46,7 @@ Slider::Slider(const QString &group, const QString &name,
   slider->setTickInterval(1);
   slider->setSingleStep(1);
   slider->setPageStep(1);
+  slider->setToolTip(tr("Default value: ") + QString::number((float)stdValue / exponent));
 
   key = (group != "General"?group + "/":"") + name;
   
@@ -54,7 +55,8 @@ Slider::Slider(const QString &group, const QString &name,
   }
   slider->setValue(settings->value(key).toFloat() * exponent);
   lineEdit->setText(QString::number((float)slider->value() / exponent));
-
+  lineEdit->setToolTip(tr("Default value: ") + QString::number((float)stdValue / exponent));
+  
   QHBoxLayout *layout = new QHBoxLayout();
   layout->addWidget(lineEdit);
   layout->addWidget(slider);

@@ -44,7 +44,9 @@ CheckBox::CheckBox(const QString &group, const QString &name,
     settings->setValue(key, (stdValue?"true":"false"));
   }
   setChecked(settings->value(key, stdValue).toBool());
-  
+
+  setToolTip(tr("Default state: ") + (stdValue?tr("True"):tr("False")));
+
   connect(this, &QCheckBox::stateChanged, this, &CheckBox::saveToConfig);
 }
 
