@@ -62,7 +62,7 @@ To get the best results, you need to do a bit of work on your photo to ensure it
 
 ## Release notes
 
-#### Version 0.7.1 (In progress, unreleased)
+#### Version 0.7.1 (25th Nov 2021)
 * Added 'PNG' to main UI input filename label
 * Now always converts to grayscale if color image is detected
 * Added default values as tooltips for all config widgets
