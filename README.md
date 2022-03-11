@@ -1,5 +1,5 @@
 # LithoMaker
-Creates 3D lithophanes from PNG image files and exports them to STL files, ready for slicing and 3D printing.
+Open source, easy to use, Lithophane software. Creates 3D lithophanes from PNG image files and exports them to STL files, ready for slicing and 3D printing.
 
 Download the latest release [here](https://github.com/muldjord/lithomaker/releases).
 
